@@ -19,7 +19,13 @@ export default class Level01 extends Level {
   }
 
   populateWorld() {
+    const ground = new Box(
+      this._levelWidth / 2, this._levelHeight - 100,
+      this._levelWidth, 10,
+      { color: 0xaaaaaa },
+      { isStatic: true }
+    )
     const box1 = new Box(215, 10, 30, 20, { color: 0xff0000 })
-    this.scene.add([ box1 ])
+    this.scene.add([ ground, box1 ])
   }
 }

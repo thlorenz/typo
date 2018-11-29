@@ -45,8 +45,6 @@ export abstract class Level implements ILevel {
   _debugRender: Render | null = null
   _render: P.Application | null = null
 
-  _lastTick: number = 0
-
   protected get scene() { return this._scene }
 
   constructor({
@@ -64,13 +62,7 @@ export abstract class Level implements ILevel {
     this._renderParent = renderParent
     this._debugRenderParent = debugRenderParent
 
-    this._bind()
-
     this._engine = Engine.create()
-  }
-
-  _bind() {
-    this._tick = this._tick.bind(this)
   }
 
   init({ debug = true, render = true }) {
@@ -83,23 +75,10 @@ export abstract class Level implements ILevel {
 
   start() {
     if (this._debugRender != null) Render.run(this._debugRender)
-    if (this._render != null) {
-      this._render.ticker.add(this._tick)
-    } else {
-      this._tick()
-    }
+    Engine.run(this._engine)
   }
 
-  _tick() {
-    const now = Date.now()
-    const deltaTime = this._lastTick === 0 ? 0 : now - this._lastTick
-    this._lastTick = now
-    this._update(deltaTime)
-    if (this._render == null) requestAnimationFrame(this._tick)
-  }
-
-  _update(deltaTime: number): void {
-    Engine.update(this._engine, deltaTime)
+  _update(): void {
     this._scene.update()
     this.updateLevel()
   }
