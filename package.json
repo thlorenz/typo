@@ -2,11 +2,13 @@
   "name": "typo",
   "version": "0.0.0",
   "description": "The platformer 10 finger typing game.",
-  "main": "main.js",
+  "main": "dist/main.js",
+  "types": "dist/@types",
   "scripts": {
     "start": "parcel index.html",
     "start:server": "http-server -p 1235 --cors=*",
     "build": "parcel build index.html",
+    "tsc": "rm -rf dist/* && tsc -p .",
     "postinstall": "cd node_modules/@types && ln -s '../pixi-viewport/@types' pixi-viewport"
   },
   "browserslist": {
@@ -29,7 +31,8 @@
     "parcel-bundler": "~1.10.3",
     "pixi-viewport": "~3.11.0",
     "pixi.js": "~4.8.2",
-    "typescript": "~3.1.6"
+    "poly-decomp": "~0.3.0",
+    "typescript": "~3.3.0-dev.20181130"
   },
   "keywords": [],
   "author": {

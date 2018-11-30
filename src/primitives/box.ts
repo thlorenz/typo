@@ -1,6 +1,10 @@
-import { IGraphicsOptions } from '../base/options'
+import {
+  IGameObjectOptions,
+  IGraphicsOptions,
+  defaultGameObjectOptions
+} from '../base/options'
 import { GameObject } from '../base/game-object'
-import { Bodies, IChamferableBodyDefinition } from 'matter-js'
+import { Bodies } from 'matter-js'
 
 export default class Box extends GameObject {
   _width: number
@@ -11,15 +15,17 @@ export default class Box extends GameObject {
     y: number,
     width: number,
     height: number,
-    graphicsOptions: IGraphicsOptions,
-    bodyOptions: IChamferableBodyDefinition = {}
+    angle: number,
+    options: IGameObjectOptions = defaultGameObjectOptions
   ) {
-    super(Bodies.rectangle(x, y, width, height, bodyOptions))
+    options.body.angle = angle
+    const body = Bodies.rectangle(x, y, width, height, options.body)
+    super(body)
 
     this._width = width
     this._height = height
 
-    this._draw(graphicsOptions)
+    this._draw(options.graphics)
   }
 
   _draw(opts: IGraphicsOptions) {
