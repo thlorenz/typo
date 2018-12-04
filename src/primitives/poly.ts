@@ -4,9 +4,8 @@ import decomp from 'poly-decomp'
 window.decomp = decomp
 
 import {
-  IGameObjectOptions,
-  IGraphicsOptions,
-  defaultGameObjectOptions
+  GameObjectOptions,
+  GraphicOptions,
 } from '../base/options'
 
 import { GameObject } from '../base/game-object'
@@ -27,14 +26,14 @@ export default class Poly extends GameObject {
     x: number,
     y: number,
     points: Point[],
-    options: IGameObjectOptions = defaultGameObjectOptions
+    options: GameObjectOptions = new GameObjectOptions()
   ) {
     const vertices = pointsToVertices(points)
     super(Bodies.fromVertices(x, y, [ vertices ], options.body))
     this._draw(options.graphics)
   }
 
-  _draw(opts: IGraphicsOptions) {
+  _draw(opts: GraphicOptions) {
     this._graphics.beginFill(opts.color, opts.alpha)
     // TODO: how to draw this in pixi and set pivot correctly?
     this._graphics.endFill()

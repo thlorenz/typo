@@ -1,19 +1,30 @@
 import { IChamferableBodyDefinition } from 'matter-js'
 
-export interface IGraphicsOptions {
-  color: number
-  alpha?: number
+class GraphicOptions {
+  color: number = 0xaaaaaa
+  alpha: number = 1
   radius?: number
 }
 
-export interface IGameObjectOptions {
-  graphics: IGraphicsOptions
-  body: IChamferableBodyDefinition
+class BodyOptions implements IChamferableBodyDefinition {
+    friction = 0.01
+    frictionAir = 0.01
+    density = 0.2
+    isStatic = true
 }
 
-export const defaultGraphicsOptions = { color: 0xaaaaaa, alpha: 1} 
-export const defaultBodyOptions = {}
-export const defaultGameObjectOptions = {
-  graphics: defaultGraphicsOptions,
-  body: defaultBodyOptions
+class BehaviorOptions {
+  type = ''
+}
+
+class GameObjectOptions {
+  behavior = new BehaviorOptions()
+  graphics: GraphicOptions = new GraphicOptions()
+  body: IChamferableBodyDefinition = new BodyOptions() 
+}
+
+export {
+  GraphicOptions,
+  BodyOptions,
+  GameObjectOptions
 }

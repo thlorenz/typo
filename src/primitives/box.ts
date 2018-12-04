@@ -1,7 +1,6 @@
 import {
-  IGameObjectOptions,
-  IGraphicsOptions,
-  defaultGameObjectOptions
+  GameObjectOptions,
+  GraphicOptions
 } from '../base/options'
 import { GameObject } from '../base/game-object'
 import { Bodies } from 'matter-js'
@@ -16,7 +15,7 @@ export default class Box extends GameObject {
     width: number,
     height: number,
     angle: number,
-    options: IGameObjectOptions = defaultGameObjectOptions
+    options: GameObjectOptions = new GameObjectOptions()
   ) {
     options.body.angle = angle
     const body = Bodies.rectangle(x, y, width, height, options.body)
@@ -28,7 +27,7 @@ export default class Box extends GameObject {
     this._draw(options.graphics)
   }
 
-  _draw(opts: IGraphicsOptions) {
+  _draw(opts: GraphicOptions) {
     this._graphics.beginFill(opts.color, opts.alpha)
     this._graphics.drawRect(0, 0, this._width, this._height)
     this._graphics.endFill()

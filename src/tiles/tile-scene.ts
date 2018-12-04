@@ -3,40 +3,58 @@ import { Point } from '../types/geometry';
 import Box from '../primitives/box';
 import Circle from '../primitives/circle';
 import Poly from '../primitives/poly';
+import { GameObjectOptions } from '../base/options';
 
 const strict = false
 
 type Radians = { radians: void } & number
 
-interface IProperty {
-  name: 'dynamic'
-  type: 'boolean'
+type BooleanProperty = {
+  name: 'body.dynamic'
+  type: 'bool'
   value: boolean
 }
 
-interface ITileProperties {
-  dynamic: boolean
+type NumberProperty = {
+  name: 'body.friction' | 'body.friction-air' | 'body.density'
+  type: 'int' | 'float'
+  value: number
 }
 
-const defaultTileProperties: ITileProperties = {
-  dynamic: false
+type StringProperty = {
+  name: 'behavior.type'
+  type: 'string'
+  value: string
 }
+
+type Property = {
+  type: 
+  | BooleanProperty['type']
+  | NumberProperty['type']
+  | StringProperty['type']
+}
+
+const isboolean = (prop: Property): prop is BooleanProperty =>
+  prop.type === 'bool'
+const isnumber = (prop: Property): prop is NumberProperty =>
+  prop.type === 'int' || prop.type === 'float'
+const isstring = (prop: Property): prop is StringProperty =>
+  prop.type === 'string'
 
 interface ITileObject extends Point {
   id: number
   type: string
   name: string
   visible: boolean
-  dynamic?: boolean
-  properties: IProperty[] | null
+  properties?: Property[]
 
   width: number
   height: number
   rotation: number
 
-  polygon: Point[] | null
-  point: boolean | null
-  ellipse: boolean | null
+  polygon?: Point[]
+  point?: boolean
+  ellipse?: boolean
 }
 
 export interface ITileLayer extends Point {
@@ -65,7 +83,7 @@ export interface ITiled {
 
 const enum TileType { Box, Poly, Ellipse, Point }
 
-function unhandledCase(x: never) {
+function unhandledCase(x?: never) {
   throw new Error(`Case ${x} not handled in switch statement`)
 }
 
@@ -147,61 +165,96 @@ export class TileScene {
   }
 
   private _addEllipse(tile: ITileObject) {
+    const opts = TileScene.tileProperties(tile.properties)
+
     // matterjs only supports circles, so we pick the width of the ellipse only
     const radius = tile.width / 2
     const { x, y } = centerCircle(tile)
-    const circle = new Circle(x, y, radius)
-    this._addGameObject(circle, tile.properties)
+    const circle = new Circle(x, y, radius, opts)
+    this._addGameObject(circle, opts)
   }
 
   private _addPoly(tile: ITileObject) {
+    const opts = TileScene.tileProperties(tile.properties)
+
     // tiled supplies position of first vertice as position
     const { x, y } = centerPolygon(tile)
     // four sides, determine width + height and add half of each
     const poly = new Poly(x, y, tile.polygon!)
-    this._addGameObject(poly, tile.properties)
+    this._addGameObject(poly, opts)
   }
 
   private _addBox(tile: ITileObject) {
+    const opts = TileScene.tileProperties(tile.properties)
+
     const rotation = tile.rotation * Math.PI / 180 as Radians
     const { x, y } = centerBox(tile, rotation)
-    this._markCenter(x, y, tile.properties)
-    const box = new Box(x, y, tile.width, tile.height, rotation)
-    this._addGameObject(box, tile.properties)
+    this._markCenter(x, y, opts)
+    const box = new Box(x, y, tile.width, tile.height, rotation, opts)
+    this._addGameObject(box, opts)
   }
 
-  private _addGameObject(gameObject: IGameObject, props: IProperty[] | null) {
-    const { dynamic } = TileScene.tileProperties(props)
-    if (dynamic) {
-      this._dynamicGameObjects.push(gameObject)
-    } else {
-      gameObject.body.isStatic = true
+  private _addGameObject(gameObject: IGameObject, opts: GameObjectOptions) {
+    const { isStatic } = opts.body
+    if (isStatic) {
       this._staticGameObjects.push(gameObject)
+    } else {
+      this._dynamicGameObjects.push(gameObject)
     }
   }
 
   //
   // Diagnostics Helpers
   //
-  private _markCenter(x: number, y: number, props: IProperty[] | null) {
+  private _markCenter(x: number, y: number, opts: GameObjectOptions) {
     const circle = new Circle(x, y, 2)
-    this._addGameObject(circle, props)
+    this._addGameObject(circle, opts)
   }
 
   //
   // Static helpers
   //
-  static tileProperties(props: IProperty[] | null): ITileProperties {
-    const properties = defaultTileProperties
+  static tileProperties(props?: Property[]): GameObjectOptions {
+    const gameObjectOpts = new GameObjectOptions()
     if (props == null || props.length === 0) {
-      return properties
+      return gameObjectOpts
     }
     for (const x of props) {
-      switch (x.name) {
-        case 'dynamic': properties.dynamic = x.value; break
-        default: unhandledCase(x.name)
+      if (isboolean(x)) {
+        switch (x.name) {
+          case 'body.dynamic': {
+            gameObjectOpts.body.isStatic = !x.value
+            break
+          }
+          default: unhandledCase(x.name)
+        }
+      } else if (isnumber(x)) {
+        switch (x.name) {
+          case 'body.friction': {
+            gameObjectOpts.body.friction = x.value
+            break
+          }
+          case 'body.friction-air': {
+            gameObjectOpts.body.frictionAir = x.value
+            break
+          }
+          case 'body.density': {
+            gameObjectOpts.body.density = x.value
+            break
+          }
+          default: unhandledCase(x.name)
+        }
+      } else if (isstring(x)) {
+        switch(x.name) {
+          case 'behavior.type': {
+            gameObjectOpts.behavior.type = x.value
+            break
+          }
+          default: unhandledCase(x.name)
+        }
       }
     }
-    return properties
+    console.log({ props, gameObjectOpts })
+    return gameObjectOpts
   }
 }
