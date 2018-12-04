@@ -1,6 +1,6 @@
 import { World } from 'matter-js'
 import { ILevelOptions, Level } from '../base/level'
-import { ITileLayer, TileScene} from '../tiles/tile-scene'
+import { ITileLayer, TileScene } from '../tiles/tile-scene'
 
 import * as tiled from '../../design/level01/static.layer.tiled.json'
 

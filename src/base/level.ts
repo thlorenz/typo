@@ -92,7 +92,7 @@ export abstract class Level implements ILevel {
     this._render = new P.Application(
       this._viewportWidth,
       this._viewportHeight,
-      { backgroundColor: 0x222222, transparent: true  }
+      { backgroundColor: 0x222222, transparent: true }
     )
     this._renderParent.appendChild(this._render.view)
   }

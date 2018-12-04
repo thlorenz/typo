@@ -25,5 +25,5 @@ export abstract class GameObject implements IGameObject {
     this._graphics.rotation = this._body.angle
   }
 
-  update() {}
+  update() { }
 }

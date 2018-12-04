@@ -11,7 +11,8 @@
     "tsc": "rm -rf dist/* && tsc -p .",
     "tsl": "tslint -p . --force -t stylish",
     "tsl:fix": "tslint -p . --force -t stylish --fix",
-    "lint": "npm run tsc && npm run tsl",
+    "tsfmt": "tsfmt --baseDir . -r" ,
+    "lint": "npm run tsc &&  npm run tsl",
     "postinstall": "cd node_modules/@types && ln -s '../pixi-viewport/@types' pixi-viewport"
   },
   "browserslist": {
@@ -35,7 +36,9 @@
     "pixi-viewport": "~3.11.0",
     "pixi.js": "~4.8.2",
     "poly-decomp": "~0.3.0",
-    "typescript": "~3.3.0-dev.20181130"
+    "tslint": "~5.11.0",
+    "typescript": "~3.2.1",
+    "typescript-formatter": "~7.2.2"
   },
   "keywords": [],
   "author": {

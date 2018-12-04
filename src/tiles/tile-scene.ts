@@ -33,19 +33,19 @@ interface StringProperty {
 
 interface Property {
   name:
-  | BooleanProperty['name']
-  | NumberProperty['name']
-  | StringProperty['name']
+  | BooleanProperty[ 'name' ]
+  | NumberProperty[ 'name' ]
+  | StringProperty[ 'name' ]
 
   type:
-  | BooleanProperty['type']
-  | NumberProperty['type']
-  | StringProperty['type']
+  | BooleanProperty[ 'type' ]
+  | NumberProperty[ 'type' ]
+  | StringProperty[ 'type' ]
 
   value:
-  | BooleanProperty['value']
-  | NumberProperty['value']
-  | StringProperty['value']
+  | BooleanProperty[ 'value' ]
+  | NumberProperty[ 'value' ]
+  | StringProperty[ 'value' ]
 }
 
 const isboolean = (prop: Property): prop is BooleanProperty =>
