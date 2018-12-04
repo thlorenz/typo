@@ -36,9 +36,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":218.494813506952,
-                 "x":155.594791436769,
-                 "y":203.045685279188
+                 "width":345.398366806444,
+                 "x":154.491282277643,
+                 "y":201.942176120062
                 }, 
                 {
                  "ellipse":true,
@@ -50,13 +50,46 @@
                          "name":"body.dynamic",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"body.friction",
+                         "type":"float",
+                         "value":0.0001
+                        }, 
+                        {
+                         "name":"body.frictionAir",
+                         "type":"float",
+                         "value":0.0001
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32.0017656146546,
                  "x":-2.20701831825204,
-                 "y":-17.6561465460163
+                 "y":-3.31052747737807
+                }, 
+                {
+                 "ellipse":true,
+                 "height":30,
+                 "id":33,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"body.dynamic",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"body.frictionStatic",
+                         "type":"float",
+                         "value":200000
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30,
+                 "x":428.161553740896,
+                 "y":171.043919664533
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -65,7 +98,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":29,
+ "nextobjectid":34,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.1",

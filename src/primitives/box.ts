@@ -1,13 +1,13 @@
+import { Bodies } from 'matter-js'
+import { GameObject } from '../base/game-object'
 import {
   GameObjectOptions,
   GraphicOptions
 } from '../base/options'
-import { GameObject } from '../base/game-object'
-import { Bodies } from 'matter-js'
 
 export default class Box extends GameObject {
-  _width: number
-  _height: number
+  private _width: number
+  private _height: number
 
   constructor(
     x: number,
@@ -27,18 +27,19 @@ export default class Box extends GameObject {
     this._draw(options.graphics)
   }
 
-  _draw(opts: GraphicOptions) {
-    this._graphics.beginFill(opts.color, opts.alpha)
-    this._graphics.drawRect(0, 0, this._width, this._height)
-    this._graphics.endFill()
-    this._graphics.pivot.set(this._width / 2, this._height / 2)
+  private _draw(opts: GraphicOptions) {
+    this.graphics.beginFill(opts.color, opts.alpha)
+    this.graphics.drawRect(0, 0, this._width, this._height)
+    this.graphics.endFill()
+    this.graphics.pivot.set(this._width / 2, this._height / 2)
     this.syncGraphics()
   }
 
-  _drawDebug() {
-    this._graphics.beginFill(0x000000, 0.2)
-    this._graphics.drawCircle(this._width / 2, this._height / 2, 2)
-    this._graphics.drawRect(this._width / 2, 0, 1, this._height / 2)
-    this._graphics.endFill()
+  // @ts-ignore will use soon
+  private _drawDebug() {
+    this.graphics.beginFill(0x000000, 0.2)
+    this.graphics.drawCircle(this._width / 2, this._height / 2, 2)
+    this.graphics.drawRect(this._width / 2, 0, 1, this._height / 2)
+    this.graphics.endFill()
   }
 }

@@ -5,12 +5,12 @@ window.decomp = decomp
 
 import {
   GameObjectOptions,
-  GraphicOptions,
+  GraphicOptions
 } from '../base/options'
 
-import { GameObject } from '../base/game-object'
 import { Bodies, Vector } from 'matter-js'
-import { Point } from '../types/geometry';
+import { GameObject } from '../base/game-object'
+import { Point } from '../types/geometry'
 
 function pointsToVertices(points: Point[]) {
   const vertices = []
@@ -34,15 +34,15 @@ export default class Poly extends GameObject {
   }
 
   _draw(opts: GraphicOptions) {
-    this._graphics.beginFill(opts.color, opts.alpha)
+    this.graphics.beginFill(opts.color, opts.alpha)
     // TODO: how to draw this in pixi and set pivot correctly?
-    this._graphics.endFill()
+    this.graphics.endFill()
     this.syncGraphics()
   }
 
   _drawDebug() {
-    this._graphics.beginFill(0x000000, 0.2)
+    this.graphics.beginFill(0x000000, 0.2)
     // TODO: how to draw this in pixi and set pivot correctly?
-    this._graphics.endFill()
+    this.graphics.endFill()
   }
 }

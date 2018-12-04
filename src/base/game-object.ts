@@ -1,16 +1,16 @@
-import * as P from 'pixi.js'
 import { Body } from 'matter-js'
+import * as P from 'pixi.js'
 
 export interface IGameObject {
   body: Body
   graphics: P.Graphics
-  syncGraphics() : void
+  syncGraphics(): void
   update(): void
 }
 
 export abstract class GameObject implements IGameObject {
-  _body: Body
-  _graphics: P.Graphics
+  private _body: Body
+  private _graphics: P.Graphics
 
   constructor(body: Body, graphics = new P.Graphics()) {
     this._body = body

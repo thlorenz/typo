@@ -1,9 +1,9 @@
-import {
-  GraphicOptions,
-  GameObjectOptions,
-} from '../base/options'
-import { GameObject } from '../base/game-object'
 import { Bodies } from 'matter-js'
+import { GameObject } from '../base/game-object'
+import {
+  GameObjectOptions,
+  GraphicOptions
+} from '../base/options'
 
 export default class Circle extends GameObject {
   _radius: number
@@ -20,16 +20,16 @@ export default class Circle extends GameObject {
   }
 
   _draw(opts: GraphicOptions) {
-    this._graphics.beginFill(opts.color, opts.alpha)
-    this._graphics.drawCircle(0, 0, this._radius)
-    this._graphics.endFill()
+    this.graphics.beginFill(opts.color, opts.alpha)
+    this.graphics.drawCircle(0, 0, this._radius)
+    this.graphics.endFill()
     this.syncGraphics()
   }
 
   _drawDebug() {
-    this._graphics.beginFill(0x000000, 0.2)
-    this._graphics.drawCircle(0, 0, 2)
-    this._graphics.drawRect(0, -this._radius, 2, this._radius)
-    this._graphics.endFill()
+    this.graphics.beginFill(0x000000, 0.2)
+    this.graphics.drawCircle(0, 0, 2)
+    this.graphics.drawRect(0, -this._radius, 2, this._radius)
+    this.graphics.endFill()
   }
 }

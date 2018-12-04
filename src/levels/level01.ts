@@ -1,6 +1,6 @@
-import { Level, ILevelOptions } from '../base/level'
-import { TileScene, ITileLayer} from '../tiles/tile-scene'
-import { World } from 'matter-js';
+import { World } from 'matter-js'
+import { ILevelOptions, Level } from '../base/level'
+import { ITileLayer, TileScene} from '../tiles/tile-scene'
 
 import * as tiled from '../../design/level01/static.layer.tiled.json'
 
@@ -24,7 +24,7 @@ export default class Level01 extends Level {
   populateWorld() {
     const objectLayer = tiled.layers.find(x => x.type === 'objectgroup')
     if (objectLayer == null) throw new Error('No object layer found in tilemap')
-    const tileScene = new TileScene(objectLayer! as ITileLayer)
+    const tileScene = new TileScene(objectLayer as ITileLayer)
     const staticBodies = tileScene.staticGameObjects.map(x => x.body)
     const dynamicBodies = tileScene.dynamicGameObjects.map(x => x.body)
     World.add(this.scene._world, [ ...staticBodies, ...dynamicBodies ])

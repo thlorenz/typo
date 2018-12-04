@@ -1,37 +1,51 @@
 import { IGameObject } from '../base/game-object'
-import { Point } from '../types/geometry';
-import Box from '../primitives/box';
-import Circle from '../primitives/circle';
-import Poly from '../primitives/poly';
-import { GameObjectOptions } from '../base/options';
+import { GameObjectOptions } from '../base/options'
+import Box from '../primitives/box'
+import Circle from '../primitives/circle'
+import Poly from '../primitives/poly'
+import { Point } from '../types/geometry'
 
 const strict = false
 
 type Radians = { radians: void } & number
 
-type BooleanProperty = {
+interface BooleanProperty {
   name: 'body.dynamic'
   type: 'bool'
   value: boolean
 }
 
-type NumberProperty = {
-  name: 'body.friction' | 'body.friction-air' | 'body.density'
+interface NumberProperty {
+  name:
+  | 'body.friction'
+  | 'body.frictionAir'
+  | 'body.frictionStatic'
+  | 'body.density'
   type: 'int' | 'float'
   value: number
 }
 
-type StringProperty = {
+interface StringProperty {
   name: 'behavior.type'
   type: 'string'
   value: string
 }
 
-type Property = {
-  type: 
+interface Property {
+  name:
+  | BooleanProperty['name']
+  | NumberProperty['name']
+  | StringProperty['name']
+
+  type:
   | BooleanProperty['type']
   | NumberProperty['type']
   | StringProperty['type']
+
+  value:
+  | BooleanProperty['value']
+  | NumberProperty['value']
+  | StringProperty['value']
 }
 
 const isboolean = (prop: Property): prop is BooleanProperty =>
@@ -107,23 +121,6 @@ function centerBox(tile: ITileObject, rotation: Radians): Point {
   return { x, y }
 }
 
-function centerPolygon(tile: ITileObject): Point {
-  console.log({
-    x: tile.x,
-    y: tile.y,
-  })
-  // XXX: adapting this properly is never exact, so use triangles sparingly for now
-  const points = tile.polygon!
-  if (points.length !== 3) throw new Error('Only polygon triangles supported')
-
-  const width = points[2].x - points[0].x
-  const height = points[1].y - points[0].y
-
-  const x = tile.x + Math.round(width / 2)
-  const y = tile.y + Math.round(height / 2)
-  return { x, y }
-}
-
 function centerCircle(tile: ITileObject): Point {
   const rx = tile.width / 2
   const ry = tile.height / 2
@@ -131,6 +128,59 @@ function centerCircle(tile: ITileObject): Point {
 }
 
 export class TileScene {
+
+  get staticGameObjects() { return this._staticGameObjects }
+  get dynamicGameObjects() { return this._dynamicGameObjects }
+
+  //
+  // Static helpers
+  //
+  static tileProperties(props?: Property[]): GameObjectOptions {
+    const gameObjectOpts = new GameObjectOptions()
+    if (props == null || props.length === 0) {
+      return gameObjectOpts
+    }
+    for (const x of props) {
+      if (isboolean(x)) {
+        switch (x.name) {
+          case 'body.dynamic': {
+            gameObjectOpts.body.isStatic = !x.value
+            break
+          }
+          default: unhandledCase(x.name)
+        }
+      } else if (isnumber(x)) {
+        switch (x.name) {
+          case 'body.friction': {
+            gameObjectOpts.body.friction = x.value
+            break
+          }
+          case 'body.frictionAir': {
+            gameObjectOpts.body.frictionAir = x.value
+            break
+          }
+          case 'body.frictionStatic': {
+            gameObjectOpts.body.frictionStatic = x.value
+            break
+          }
+          case 'body.density': {
+            gameObjectOpts.body.density = x.value
+            break
+          }
+          default: unhandledCase(x.name)
+        }
+      } else if (isstring(x)) {
+        switch (x.name) {
+          case 'behavior.type': {
+            gameObjectOpts.behavior.type = x.value
+            break
+          }
+          default: unhandledCase(x.name)
+        }
+      }
+    }
+    return gameObjectOpts
+  }
   private _tileLayer: ITileLayer
   private _staticGameObjects: IGameObject[] = []
   private _dynamicGameObjects: IGameObject[] = []
@@ -139,9 +189,6 @@ export class TileScene {
     this._tileLayer = tileLayer
     this._extractGameObjects()
   }
-
-  get staticGameObjects() { return this._staticGameObjects }
-  get dynamicGameObjects() { return this._dynamicGameObjects }
 
   private _extractGameObjects() {
     for (const tile of this._tileLayer.objects) {
@@ -161,7 +208,7 @@ export class TileScene {
   }
 
   private _addPoint(tile: ITileObject) {
-    if (strict) throw new Error(`_addPoint(${tile}) not yet implemented`);
+    if (strict) throw new Error(`_addPoint(${tile}) not yet implemented`)
   }
 
   private _addEllipse(tile: ITileObject) {
@@ -177,10 +224,10 @@ export class TileScene {
   private _addPoly(tile: ITileObject) {
     const opts = TileScene.tileProperties(tile.properties)
 
-    // tiled supplies position of first vertice as position
-    const { x, y } = centerPolygon(tile)
-    // four sides, determine width + height and add half of each
-    const poly = new Poly(x, y, tile.polygon!)
+    // tiled supplies position of first vertice in the array as position
+    // not sure at this point how to translate position to matter
+    // the dimensions and shape are rendered correctly, just posision is off
+    const poly = new Poly(tile.x, tile.y, tile.polygon!)
     this._addGameObject(poly, opts)
   }
 
@@ -209,52 +256,5 @@ export class TileScene {
   private _markCenter(x: number, y: number, opts: GameObjectOptions) {
     const circle = new Circle(x, y, 2)
     this._addGameObject(circle, opts)
-  }
-
-  //
-  // Static helpers
-  //
-  static tileProperties(props?: Property[]): GameObjectOptions {
-    const gameObjectOpts = new GameObjectOptions()
-    if (props == null || props.length === 0) {
-      return gameObjectOpts
-    }
-    for (const x of props) {
-      if (isboolean(x)) {
-        switch (x.name) {
-          case 'body.dynamic': {
-            gameObjectOpts.body.isStatic = !x.value
-            break
-          }
-          default: unhandledCase(x.name)
-        }
-      } else if (isnumber(x)) {
-        switch (x.name) {
-          case 'body.friction': {
-            gameObjectOpts.body.friction = x.value
-            break
-          }
-          case 'body.friction-air': {
-            gameObjectOpts.body.frictionAir = x.value
-            break
-          }
-          case 'body.density': {
-            gameObjectOpts.body.density = x.value
-            break
-          }
-          default: unhandledCase(x.name)
-        }
-      } else if (isstring(x)) {
-        switch(x.name) {
-          case 'behavior.type': {
-            gameObjectOpts.behavior.type = x.value
-            break
-          }
-          default: unhandledCase(x.name)
-        }
-      }
-    }
-    console.log({ props, gameObjectOpts })
-    return gameObjectOpts
   }
 }

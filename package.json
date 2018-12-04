@@ -9,6 +9,9 @@
     "start:server": "http-server -p 1235 --cors=*",
     "build": "parcel build index.html",
     "tsc": "rm -rf dist/* && tsc -p .",
+    "tsl": "tslint -p . --force -t stylish",
+    "tsl:fix": "tslint -p . --force -t stylish --fix",
+    "lint": "npm run tsc && npm run tsl",
     "postinstall": "cd node_modules/@types && ln -s '../pixi-viewport/@types' pixi-viewport"
   },
   "browserslist": {

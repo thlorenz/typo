@@ -1,12 +1,12 @@
-import * as P from 'pixi.js'
 import { World } from 'matter-js'
+import * as P from 'pixi.js'
 import { IGameObject } from './game-object'
 
 export default class Scene {
   _world: World
   _container: P.Container | null
-  _gameObjects: Array<IGameObject> = []
-  _liveObjects: Array<IGameObject> = []
+  _gameObjects: IGameObject[] = []
+  _liveObjects: IGameObject[] = []
 
   constructor(world: World, container: P.Container | null) {
     this._world = world
@@ -21,7 +21,7 @@ export default class Scene {
     if (this._container != null) this._container.addChild(gameObject.graphics)
   }
 
-  add(gameObjects: Array<IGameObject>) {
+  add(gameObjects: IGameObject[]) {
     for (const gameObject of gameObjects) this.addGameObject(gameObject)
   }
 

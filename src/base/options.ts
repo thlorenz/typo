@@ -1,5 +1,7 @@
 import { IChamferableBodyDefinition } from 'matter-js'
 
+type GameObjectType = 'none' | 'bomb'
+
 class GraphicOptions {
   color: number = 0xaaaaaa
   alpha: number = 1
@@ -7,10 +9,11 @@ class GraphicOptions {
 }
 
 class BodyOptions implements IChamferableBodyDefinition {
-    friction = 0.01
-    frictionAir = 0.01
-    density = 0.2
-    isStatic = true
+  friction = 0.01
+  frictionAir = 0.01
+  frictionStatic = 0.5
+  density = 0.2
+  isStatic = true
 }
 
 class BehaviorOptions {
@@ -20,7 +23,8 @@ class BehaviorOptions {
 class GameObjectOptions {
   behavior = new BehaviorOptions()
   graphics: GraphicOptions = new GraphicOptions()
-  body: IChamferableBodyDefinition = new BodyOptions() 
+  body: IChamferableBodyDefinition = new BodyOptions()
+  constructor(public type: GameObjectType = 'none') { }
 }
 
 export {

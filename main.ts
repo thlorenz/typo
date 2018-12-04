@@ -1,5 +1,5 @@
-import Level01 from './src/levels/level01'
 import { ILevel } from './src/base/level'
+import Level01 from './src/levels/level01'
 
 const viewportWidth = 640
 const viewportHeight = 480
@@ -17,7 +17,7 @@ function init(): ILevel {
   removeExistingGame()
   return new Level01({
     viewportWidth,
-    viewportHeight,
+    viewportHeight
   })
 }
 

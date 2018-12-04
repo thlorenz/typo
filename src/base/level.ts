@@ -1,8 +1,8 @@
-import * as P from 'pixi.js'
 import {
   Engine,
   Render
 } from 'matter-js'
+import * as P from 'pixi.js'
 
 import Scene from './scene'
 
@@ -30,22 +30,23 @@ interface ILevelInitOptions {
 }
 
 export abstract class Level implements ILevel {
-  _levelWidth: number
-  _levelHeight: number
-
-  _viewportWidth: number
-  _viewportHeight: number
-
-  _renderParent: HTMLElement
-  _debugRenderParent: HTMLElement
-
-  _engine: Engine
-  _scene!: Scene
-
-  _debugRender: Render | null = null
-  _render: P.Application | null = null
 
   protected get scene() { return this._scene }
+  private _levelWidth: number
+  private _levelHeight: number
+
+  private _viewportWidth: number
+  private _viewportHeight: number
+
+  private _renderParent: HTMLElement
+  // @ts-ignore will use in the future
+  private _debugRenderParent: HTMLElement
+
+  private _engine: Engine
+  private _scene!: Scene
+
+  private _debugRender: Render | null = null
+  private _render: P.Application | null = null
 
   constructor({
     levelWidth,
@@ -78,15 +79,16 @@ export abstract class Level implements ILevel {
     Engine.run(this._engine)
   }
 
-  _update(): void {
+  protected abstract populateWorld(): void
+  protected updateLevel(): void { }
+
+  // @ts-ignore (will use in the future)
+  private _update(): void {
     this._scene.update()
     this.updateLevel()
   }
 
-  protected abstract populateWorld(): void
-  protected updateLevel(): void { }
-
-  _initRender() {
+  private _initRender() {
     this._render = new P.Application(
       this._viewportWidth,
       this._viewportHeight,
@@ -95,7 +97,7 @@ export abstract class Level implements ILevel {
     this._renderParent.appendChild(this._render.view)
   }
 
-  _initDebugRender() {
+  private _initDebugRender() {
     this._debugRender = Render.create({
       element: document.body,
       engine: this._engine,
