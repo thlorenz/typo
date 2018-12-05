@@ -1,9 +1,13 @@
 import { IGameObject } from '../base/game-object'
-import { GameObjectOptions } from '../base/options'
+import {
+  GameObjectOptions,
+  RoleType, roleTypeFromString
+} from '../base/options'
 import Box from '../primitives/box'
 import Circle from '../primitives/circle'
 import Poly from '../primitives/poly'
 import { Point } from '../types/geometry'
+import { unhandledCase } from '../util/guards'
 
 const strict = false
 
@@ -25,27 +29,37 @@ interface NumberProperty {
   value: number
 }
 
+interface RoleTypeProperty {
+  name: 'role.type'
+  type: 'string'
+  value: keyof typeof RoleType
+}
+
 interface StringProperty {
-  name: 'behavior.type'
+  name:
+  | RoleTypeProperty['name']
+  | 'role.id'
+  | 'role.triggerId'
   type: 'string'
   value: string
 }
 
 interface Property {
   name:
-  | BooleanProperty[ 'name' ]
-  | NumberProperty[ 'name' ]
-  | StringProperty[ 'name' ]
+  | BooleanProperty['name']
+  | NumberProperty['name']
+  | StringProperty['name']
+  | RoleTypeProperty['name']
 
   type:
-  | BooleanProperty[ 'type' ]
-  | NumberProperty[ 'type' ]
-  | StringProperty[ 'type' ]
+  | BooleanProperty['type']
+  | NumberProperty['type']
+  | StringProperty['type']
 
   value:
-  | BooleanProperty[ 'value' ]
-  | NumberProperty[ 'value' ]
-  | StringProperty[ 'value' ]
+  | BooleanProperty['value']
+  | NumberProperty['value']
+  | StringProperty['value']
 }
 
 const isboolean = (prop: Property): prop is BooleanProperty =>
@@ -97,10 +111,6 @@ export interface ITiled {
 
 const enum TileType { Box, Poly, Ellipse, Point }
 
-function unhandledCase(x?: never) {
-  throw new Error(`Case ${x} not handled in switch statement`)
-}
-
 function tileType(tile: ITileObject): TileType {
   if (tile.point === true) return TileType.Point
   if (tile.ellipse === true) return TileType.Ellipse
@@ -128,7 +138,6 @@ function centerCircle(tile: ITileObject): Point {
 }
 
 export class TileScene {
-
   get staticGameObjects() { return this._staticGameObjects }
   get dynamicGameObjects() { return this._dynamicGameObjects }
 
@@ -171,8 +180,17 @@ export class TileScene {
         }
       } else if (isstring(x)) {
         switch (x.name) {
-          case 'behavior.type': {
-            gameObjectOpts.behavior.type = x.value
+          case 'role.type': {
+            gameObjectOpts.role.type =
+              roleTypeFromString((x as RoleTypeProperty).value)
+            break
+          }
+          case 'role.id': {
+            gameObjectOpts.role.id = x.value
+            break
+          }
+          case 'role.triggerId': {
+            gameObjectOpts.role.triggerId = x.value
             break
           }
           default: unhandledCase(x.name)
@@ -182,8 +200,11 @@ export class TileScene {
     return gameObjectOpts
   }
   private _tileLayer: ITileLayer
+  private _sensorGameObjects: IGameObject[] = []
   private _staticGameObjects: IGameObject[] = []
   private _dynamicGameObjects: IGameObject[] = []
+  private _roleGameObjects = new Map<string, IGameObject>()
+  private _triggerGameObjects: IGameObject[] = []
 
   constructor(tileLayer: ITileLayer) {
     this._tileLayer = tileLayer
@@ -242,11 +263,22 @@ export class TileScene {
   }
 
   private _addGameObject(gameObject: IGameObject, opts: GameObjectOptions) {
-    const { isStatic } = opts.body
+    const { isStatic, isSensor } = opts.body
+    const { role } = opts
     if (isStatic) {
       this._staticGameObjects.push(gameObject)
     } else {
       this._dynamicGameObjects.push(gameObject)
+    }
+    if (isSensor) {
+      this._sensorGameObjects.push(gameObject)
+    }
+    if (role.type === RoleType.Bomb) {
+      if (role.id == null) throw new Error('bombs need id')
+      this._roleGameObjects.set(role.id, gameObject)
+    } else if (role.type === RoleType.Trigger) {
+      if (role.triggerId == null) throw new Error('triggers need triggerId')
+      this._triggerGameObjects.push(gameObject)
     }
   }
 

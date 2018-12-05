@@ -19,7 +19,7 @@ export default class Box extends GameObject {
   ) {
     options.body.angle = angle
     const body = Bodies.rectangle(x, y, width, height, options.body)
-    super(body)
+    super(body, options.role)
 
     this._width = width
     this._height = height

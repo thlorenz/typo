@@ -29,7 +29,7 @@ export default class Poly extends GameObject {
     options: GameObjectOptions = new GameObjectOptions()
   ) {
     const vertices = pointsToVertices(points)
-    super(Bodies.fromVertices(x, y, [ vertices ], options.body))
+    super(Bodies.fromVertices(x, y, [ vertices ], options.body), options.role)
     this._draw(options.graphics)
   }
 

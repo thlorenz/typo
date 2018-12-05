@@ -14,7 +14,7 @@ export default class Circle extends GameObject {
     radius: number,
     options: GameObjectOptions = new GameObjectOptions()
   ) {
-    super(Bodies.circle(x, y, radius, options.body))
+    super(Bodies.circle(x, y, radius, options.body), options.role)
     this._radius = radius
     this._draw(options.graphics)
   }
