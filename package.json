@@ -9,6 +9,7 @@
     "start:server": "http-server -p 1235 --cors=*",
     "build": "parcel build index.html",
     "tsc": "rm -rf dist/* && tsc -p .",
+    "tsc:watch": "rm -rf dist/* && tsc -p . --watch",
     "tsl": "tslint -p . --force -t stylish",
     "tsl:fix": "tslint -p . --force -t stylish --fix",
     "tsfmt": "tsfmt --baseDir . -r" ,
