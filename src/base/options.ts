@@ -52,6 +52,7 @@ export {
   GraphicOptions,
   BodyOptions,
   GameObjectOptions,
+  GameObjectType,
   RoleType,
   roleTypeFromString,
   RoleOptions

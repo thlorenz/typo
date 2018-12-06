@@ -14,7 +14,9 @@ const strict = false
 type Radians = { radians: void } & number
 
 interface BooleanProperty {
-  name: 'body.dynamic'
+  name:
+  | 'body.dynamic'
+  | 'body.isSensor'
   type: 'bool'
   value: boolean
 }
@@ -140,6 +142,9 @@ function centerCircle(tile: ITileObject): Point {
 export class TileScene {
   get staticGameObjects() { return this._staticGameObjects }
   get dynamicGameObjects() { return this._dynamicGameObjects }
+  get triggerGameObjects() { return this._triggerGameObjects }
+  get sensorGameObjects() { return this._sensorGameObjects }
+  get roleGameObjects() { return this._roleGameObjects }
 
   //
   // Static helpers
@@ -154,6 +159,10 @@ export class TileScene {
         switch (x.name) {
           case 'body.dynamic': {
             gameObjectOpts.body.isStatic = !x.value
+            break
+          }
+          case 'body.isSensor': {
+            gameObjectOpts.body.isSensor = !x.value
             break
           }
           default: unhandledCase(x.name)
@@ -199,6 +208,7 @@ export class TileScene {
     }
     return gameObjectOpts
   }
+
   private _tileLayer: ITileLayer
   private _sensorGameObjects: IGameObject[] = []
   private _staticGameObjects: IGameObject[] = []

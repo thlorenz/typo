@@ -1,4 +1,4 @@
-import { World } from 'matter-js'
+import { Events, World } from 'matter-js'
 import { ILevelOptions, Level } from '../base/level'
 import { ITileLayer, TileScene } from '../tiles/tile-scene'
 
@@ -28,6 +28,12 @@ export default class Level01 extends Level {
     const staticBodies = tileScene.staticGameObjects.map(x => x.body)
     const dynamicBodies = tileScene.dynamicGameObjects.map(x => x.body)
     World.add(this.scene._world, [ ...staticBodies, ...dynamicBodies ])
+    Events.on(this.engine, 'collisionStart', e => {
+      const [ pair ] = e.pairs
+      const { bodyA, bodyB } = pair
+      console.log({ ga: bodyA.gameObject, gb: bodyB.gameObject })
+    })
     // this.scene.add([ ground, box1, circ1, circ2 ])
   }
+
 }

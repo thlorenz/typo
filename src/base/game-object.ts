@@ -21,6 +21,7 @@ export abstract class GameObject implements IGameObject {
     this._body = body
     this._graphics = graphics
     this._role = role
+    this._body.gameObject = this
   }
   get body(): Body { return this._body }
   get graphics(): P.Graphics { return this._graphics }

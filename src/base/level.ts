@@ -32,6 +32,7 @@ interface ILevelInitOptions {
 export abstract class Level implements ILevel {
 
   protected get scene() { return this._scene }
+  protected get engine() { return this._engine }
   private _levelWidth: number
   private _levelHeight: number
 
