@@ -5,6 +5,7 @@ import { RoleOptions } from './options'
 export interface IGameObject {
   body: Body
   graphics: P.Graphics
+  role: RoleOptions
   syncGraphics(): void
   update(): void
 }

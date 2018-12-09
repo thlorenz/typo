@@ -1,7 +1,8 @@
 import { IGameObject } from '../base/game-object'
 import {
   GameObjectOptions,
-  RoleType, roleTypeFromString
+  RoleType,
+  roleTypeFromString
 } from '../base/options'
 import Box from '../primitives/box'
 import Circle from '../primitives/circle'
@@ -142,8 +143,6 @@ function centerCircle(tile: ITileObject): Point {
 export class TileScene {
   get staticGameObjects() { return this._staticGameObjects }
   get dynamicGameObjects() { return this._dynamicGameObjects }
-  get triggerGameObjects() { return this._triggerGameObjects }
-  get sensorGameObjects() { return this._sensorGameObjects }
   get roleGameObjects() { return this._roleGameObjects }
 
   //
@@ -162,7 +161,7 @@ export class TileScene {
             break
           }
           case 'body.isSensor': {
-            gameObjectOpts.body.isSensor = !x.value
+            gameObjectOpts.body.isSensor = x.value
             break
           }
           default: unhandledCase(x.name)
@@ -214,7 +213,6 @@ export class TileScene {
   private _staticGameObjects: IGameObject[] = []
   private _dynamicGameObjects: IGameObject[] = []
   private _roleGameObjects = new Map<string, IGameObject>()
-  private _triggerGameObjects: IGameObject[] = []
 
   constructor(tileLayer: ITileLayer) {
     this._tileLayer = tileLayer
@@ -267,7 +265,7 @@ export class TileScene {
 
     const rotation = tile.rotation * Math.PI / 180 as Radians
     const { x, y } = centerBox(tile, rotation)
-    this._markCenter(x, y, opts)
+    this._markCenter(x, y, opts.clone())
     const box = new Box(x, y, tile.width, tile.height, rotation, opts)
     this._addGameObject(box, opts)
   }
@@ -288,7 +286,6 @@ export class TileScene {
       this._roleGameObjects.set(role.id, gameObject)
     } else if (role.type === RoleType.Trigger) {
       if (role.triggerId == null) throw new Error('triggers need triggerId')
-      this._triggerGameObjects.push(gameObject)
     }
   }
 
@@ -296,7 +293,8 @@ export class TileScene {
   // Diagnostics Helpers
   //
   private _markCenter(x: number, y: number, opts: GameObjectOptions) {
-    const circle = new Circle(x, y, 2)
+    opts.body.isSensor = true
+    const circle = new Circle(x, y, 2, opts)
     this._addGameObject(circle, opts)
   }
 }

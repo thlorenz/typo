@@ -1,8 +1,11 @@
 import { Events, World } from 'matter-js'
 import { ILevelOptions, Level } from '../base/level'
 import { ITileLayer, TileScene } from '../tiles/tile-scene'
+import { unhandledCase } from '../util/guards'
 
 import * as tiled from '../../design/level01/static.layer.tiled.json'
+import { RoleType } from '../base/options'
+import { IGameObject } from '../base/game-object';
 
 export default class Level01 extends Level {
   constructor({
@@ -31,9 +34,27 @@ export default class Level01 extends Level {
     Events.on(this.engine, 'collisionStart', e => {
       const [ pair ] = e.pairs
       const { bodyA, bodyB } = pair
-      console.log({ ga: bodyA.gameObject, gb: bodyB.gameObject })
-    })
-    // this.scene.add([ ground, box1, circ1, circ2 ])
-  }
+      let player: IGameObject | null = null
+      let trigger: IGameObject | null = null
+      for (const go of [ bodyA.gameObject, bodyB.gameObject ]) {
+        switch (go.role.type) {
+          case RoleType.None:
+          case RoleType.Bomb:
+            break
+          case RoleType.Player:
+            player = go
+            break
+          case RoleType.Trigger:
+            trigger = go
+            break
+          default: unhandledCase(go.role.type)
+        }
+      }
+      if (player == null || trigger == null) return
+      console.log({ player, trigger })
+    }
+  })
+  // this.scene.add([ ground, box1, circ1, circ2 ])
+}
 
 }

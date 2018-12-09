@@ -4,4 +4,7 @@ declare module 'matter-js' {
   interface Body {
     gameObject: IGameObject
   }
+  interface IChamferableBodyDefinition {
+    clone(): IChamferableBodyDefinition
+  }
 }
