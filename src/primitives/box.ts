@@ -28,6 +28,7 @@ export default class Box extends GameObject {
   }
 
   private _draw(opts: GraphicOptions) {
+    if (this.graphics == null) return
     this.graphics.beginFill(opts.color, opts.alpha)
     this.graphics.drawRect(0, 0, this._width, this._height)
     this.graphics.endFill()
@@ -37,6 +38,7 @@ export default class Box extends GameObject {
 
   // @ts-ignore will use soon
   private _drawDebug() {
+    if (this.graphics == null) return
     this.graphics.beginFill(0x000000, 0.2)
     this.graphics.drawCircle(this._width / 2, this._height / 2, 2)
     this.graphics.drawRect(this._width / 2, 0, 1, this._height / 2)

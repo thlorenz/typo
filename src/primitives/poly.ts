@@ -29,11 +29,12 @@ export default class Poly extends GameObject {
     options: GameObjectOptions = new GameObjectOptions()
   ) {
     const vertices = pointsToVertices(points)
-    super(Bodies.fromVertices(x, y, [ vertices ], options.body), options.role)
+    super(Bodies.fromVertices(x, y, [vertices], options.body), options.role)
     this._draw(options.graphics)
   }
 
   _draw(opts: GraphicOptions) {
+    if (this.graphics == null) return
     this.graphics.beginFill(opts.color, opts.alpha)
     // TODO: how to draw this in pixi and set pivot correctly?
     this.graphics.endFill()
@@ -41,6 +42,7 @@ export default class Poly extends GameObject {
   }
 
   _drawDebug() {
+    if (this.graphics == null) return
     this.graphics.beginFill(0x000000, 0.2)
     // TODO: how to draw this in pixi and set pivot correctly?
     this.graphics.endFill()

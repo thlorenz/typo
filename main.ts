@@ -1,7 +1,7 @@
-import { ILevel } from './src/base/level'
+import { Level } from './src/base/level'
 import Level01 from './src/levels/level01'
 
-const viewportWidth = 640
+const viewportWidth = 840
 const viewportHeight = 480
 
 window.addEventListener('DOMContentLoaded', initGame)
@@ -13,7 +13,7 @@ function removeExistingGame(): void {
   }
 }
 
-function init(): ILevel {
+function init(): Level {
   removeExistingGame()
   return new Level01({
     viewportWidth,
@@ -23,7 +23,7 @@ function init(): ILevel {
 
 function initGame(): void {
   const level = init()
-  level.init({ debug: true, render: false })
+  level.init({ debug: true, render: true })
   level.start()
 }
 

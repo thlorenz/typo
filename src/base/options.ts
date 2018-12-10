@@ -1,4 +1,5 @@
 import { IChamferableBodyDefinition } from 'matter-js'
+import * as P from 'pixi.js'
 import { unhandledCase } from '../util/guards'
 
 const enum GameObjectType {
@@ -23,7 +24,7 @@ function roleTypeFromString(s: keyof typeof RoleType): RoleType {
 }
 
 class GraphicOptions {
-  color: number = 0xaaaaaa
+  color: number = 0x000077
   alpha: number = 1
   radius?: number
 
@@ -70,10 +71,18 @@ class RoleOptions {
   }
 }
 
+class TextStyleOptions implements P.TextStyleOptions {
+  fontFamily = 'Arial'
+  fontSize = 24
+  fill = 0xff1010
+  align = 'center'
+}
+
 class GameObjectOptions {
   role = new RoleOptions()
   graphics: GraphicOptions = new GraphicOptions()
   body: IChamferableBodyDefinition = new BodyOptions()
+  text: TextStyleOptions = new TextStyleOptions()
   constructor(public type = GameObjectType.Body) { }
 
   clone(): GameObjectOptions {
@@ -92,5 +101,6 @@ export {
   GameObjectType,
   RoleType,
   roleTypeFromString,
-  RoleOptions
+  RoleOptions,
+  TextStyleOptions
 }

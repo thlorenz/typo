@@ -1,4 +1,4 @@
-import { IGameObject } from '../base/game-object'
+import { GameObject } from '../base/game-object'
 import {
   GameObjectOptions,
   RoleType,
@@ -72,7 +72,7 @@ const isnumber = (prop: Property): prop is NumberProperty =>
 const isstring = (prop: Property): prop is StringProperty =>
   prop.type === 'string'
 
-interface ITileObject extends Point {
+interface TileObject extends Point {
   id: number
   type: string
   name: string
@@ -88,7 +88,7 @@ interface ITileObject extends Point {
   ellipse?: boolean
 }
 
-export interface ITileLayer extends Point {
+export interface TileLayer extends Point {
   draworder?: string
   id: number
   name: string
@@ -96,10 +96,10 @@ export interface ITileLayer extends Point {
   visible: boolean
   opacity: number
 
-  objects: ITileObject[]
+  objects: TileObject[]
 }
 
-export interface ITiled {
+export interface Tiled {
   width: number
   height: number
   tileheight: number
@@ -109,12 +109,12 @@ export interface ITiled {
   tiledversion: string
   version: number
 
-  layers: ITileLayer[]
+  layers: TileLayer[]
 }
 
 const enum TileType { Box, Poly, Ellipse, Point }
 
-function tileType(tile: ITileObject): TileType {
+function tileType(tile: TileObject): TileType {
   if (tile.point === true) return TileType.Point
   if (tile.ellipse === true) return TileType.Ellipse
   if (tile.polygon != null) return TileType.Poly
@@ -122,7 +122,7 @@ function tileType(tile: ITileObject): TileType {
   return TileType.Box
 }
 
-function centerBox(tile: ITileObject, rotation: Radians): Point {
+function centerBox(tile: TileObject, rotation: Radians): Point {
   const rx = tile.width / 2
   const ry = tile.height / 2
   const diagRad = ry / rx as Radians
@@ -134,7 +134,7 @@ function centerBox(tile: ITileObject, rotation: Radians): Point {
   return { x, y }
 }
 
-function centerCircle(tile: ITileObject): Point {
+function centerCircle(tile: TileObject): Point {
   const rx = tile.width / 2
   const ry = tile.height / 2
   return { x: tile.x + rx, y: tile.y + ry }
@@ -208,13 +208,12 @@ export class TileScene {
     return gameObjectOpts
   }
 
-  private _tileLayer: ITileLayer
-  private _sensorGameObjects: IGameObject[] = []
-  private _staticGameObjects: IGameObject[] = []
-  private _dynamicGameObjects: IGameObject[] = []
-  private _roleGameObjects = new Map<string, IGameObject>()
+  private _tileLayer: TileLayer
+  private _staticGameObjects: GameObject[] = []
+  private _dynamicGameObjects: GameObject[] = []
+  private _roleGameObjects = new Map<string, GameObject>()
 
-  constructor(tileLayer: ITileLayer) {
+  constructor(tileLayer: TileLayer) {
     this._tileLayer = tileLayer
     this._extractGameObjects()
   }
@@ -225,7 +224,7 @@ export class TileScene {
     }
   }
 
-  private _extractGameObject(tile: ITileObject) {
+  private _extractGameObject(tile: TileObject) {
     const ttype = tileType(tile)
     switch (ttype) {
       case TileType.Point: this._addPoint(tile); break
@@ -236,11 +235,11 @@ export class TileScene {
     }
   }
 
-  private _addPoint(tile: ITileObject) {
+  private _addPoint(tile: TileObject) {
     if (strict) throw new Error(`_addPoint(${tile}) not yet implemented`)
   }
 
-  private _addEllipse(tile: ITileObject) {
+  private _addEllipse(tile: TileObject) {
     const opts = TileScene.tileProperties(tile.properties)
 
     // matterjs only supports circles, so we pick the width of the ellipse only
@@ -250,7 +249,7 @@ export class TileScene {
     this._addGameObject(circle, opts)
   }
 
-  private _addPoly(tile: ITileObject) {
+  private _addPoly(tile: TileObject) {
     const opts = TileScene.tileProperties(tile.properties)
 
     // tiled supplies position of first vertice in the array as position
@@ -260,7 +259,7 @@ export class TileScene {
     this._addGameObject(poly, opts)
   }
 
-  private _addBox(tile: ITileObject) {
+  private _addBox(tile: TileObject) {
     const opts = TileScene.tileProperties(tile.properties)
 
     const rotation = tile.rotation * Math.PI / 180 as Radians
@@ -270,16 +269,13 @@ export class TileScene {
     this._addGameObject(box, opts)
   }
 
-  private _addGameObject(gameObject: IGameObject, opts: GameObjectOptions) {
-    const { isStatic, isSensor } = opts.body
+  private _addGameObject(gameObject: GameObject, opts: GameObjectOptions) {
+    const { isStatic } = opts.body
     const { role } = opts
     if (isStatic) {
       this._staticGameObjects.push(gameObject)
     } else {
       this._dynamicGameObjects.push(gameObject)
-    }
-    if (isSensor) {
-      this._sensorGameObjects.push(gameObject)
     }
     if (role.type === RoleType.Bomb) {
       if (role.id == null) throw new Error('bombs need id')
