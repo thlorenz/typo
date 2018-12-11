@@ -23,7 +23,7 @@ function init(): Level {
 
 function initGame(): void {
   const level = init()
-  level.init({ debug: true, render: true })
+  level.init({ debug: false, render: true })
   level.start()
 }
 
