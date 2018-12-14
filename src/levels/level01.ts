@@ -3,6 +3,8 @@ import { TileLayer, TileScene } from '../tiles/tile-scene'
 
 import * as tiled from '../../design/level01/static.layer.tiled.json'
 
+const texts = [ 'jj', 'jk', 'kj' ]
+
 export default class Level01 extends Level {
   constructor({
     viewportWidth,
@@ -14,7 +16,7 @@ export default class Level01 extends Level {
     if (objectLayer == null) throw new Error('No object layer found in tilemap')
     const tileScene = new TileScene(objectLayer as TileLayer)
 
-    super(tileScene, {
+    super(tileScene, texts, {
       levelWidth: 1000,
       levelHeight: 780,
       viewportWidth,

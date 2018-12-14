@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+      "align": [true, "elements", "members", "statements" ],
       "arrow-parens": [true, "ban-single-arg-parens"],
       "curly": [true, "ignore-same-line"],
       "interface-name" : [false],

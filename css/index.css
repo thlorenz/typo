@@ -1,0 +1,15 @@
+@import '../node_modules/simple-keyboard/build/css/index.css';
+
+body { background-color: #777777; }
+canvas {
+  top: 0;
+  left: 0;
+  position: absolute;
+  display: block;
+  touch-action: none;
+  background-color: black;
+}
+.simple-keyboard {
+  top: 480px;
+  position: absolute;
+}

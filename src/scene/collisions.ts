@@ -17,7 +17,6 @@ type SensorTriggerPayload = {
 export type SensorTriggerHandler = (payload: SensorTriggerPayload) => void
 
 export interface Collisions {
-  on(event: string, listener: (...args: any[]) => void): this
   on(event: CollisionEvent, listener: SensorTriggerHandler): this
 }
 
@@ -27,7 +26,7 @@ export class Collisions extends EventEmitter {
     private _roleGameObjects: Map<string, GameObject>
   ) {
     super()
-    Events.on(this._engine, 'colissionStart', this._oncollisionStart)
+    Events.on(this._engine, 'collisionStart', this._oncollisionStart)
   }
 
   private _oncollisionStart = (e: IEventCollision<Engine>) => {

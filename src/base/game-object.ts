@@ -1,4 +1,4 @@
-import { Body } from 'matter-js'
+import { Body, World } from 'matter-js'
 import * as P from 'pixi.js'
 import { RoleOptions, TextStyleOptions } from './options'
 
@@ -48,6 +48,19 @@ export abstract class GameObject {
     this._text.pivot = this._bodyPosition()
     this._text.position = this._bodyPosition()
     this._graphics.addChild(this._text)
+  }
+
+  advanceTextCaret() {
+    if (this._text == null) return
+    this._text.text = this._text.text.slice(1)
+  }
+
+  dispose(world: World) {
+    World.remove(world, this._body, true)
+    if (this._graphics != null) {
+      this._graphics.destroy({ children: true })
+      this._graphics = null
+    }
   }
 
   update() { }

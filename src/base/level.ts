@@ -1,3 +1,4 @@
+
 import {
   Engine,
   Render,
@@ -5,13 +6,20 @@ import {
 } from 'matter-js'
 import * as P from 'pixi.js'
 
+import { TileScene } from '../tiles/tile-scene'
+import { GameObject } from './game-object'
+
 import {
   CollisionEvent,
   Collisions,
   SensorTriggerHandler
 } from '../scene/collisions'
-import { TileScene } from '../tiles/tile-scene'
-import { GameObject } from './game-object'
+
+import {
+  KeyRacer,
+  KeyRacerEvent,
+  TriggerResolvedHandler
+} from '../scene/key-racer'
 
 export interface LevelOptions {
   viewportWidth: number
@@ -28,6 +36,7 @@ interface AllLevelOptions extends LevelOptions {
 
 export abstract class Level implements Level {
   private _tileScene: TileScene
+  private _keyRacer: KeyRacer
 
   protected get engine() { return this._engine }
 
@@ -51,7 +60,7 @@ export abstract class Level implements Level {
   private _gameObjects: GameObject[] = []
   private _liveObjects: GameObject[] = []
 
-  constructor(tileScene: TileScene, {
+  constructor(tileScene: TileScene, texts: string[], {
     levelWidth,
     levelHeight,
     viewportWidth,
@@ -70,6 +79,7 @@ export abstract class Level implements Level {
     this._engine = Engine.create()
     this._collisions =
       new Collisions(this._engine, this._tileScene.roleGameObjects)
+    this._keyRacer = new KeyRacer(texts)
   }
 
   init({ debug = true, render = true }) {
@@ -80,6 +90,7 @@ export abstract class Level implements Level {
       ._add(this._tileScene.staticGameObjects)
       ._add(this._tileScene.dynamicGameObjects)
       ._subscribeCollisions()
+      ._subscribeKeyRacer()
   }
 
   start() {
@@ -125,6 +136,12 @@ export abstract class Level implements Level {
     return this
   }
 
+  private _subscribeKeyRacer(): this {
+    this._keyRacer
+      .on(KeyRacerEvent.TriggerResolved, this._ontriggerResolved)
+    return this
+  }
+
   private _add(gameObjects: GameObject[]): this {
     for (const gameObject of gameObjects) this._addGameObject(gameObject)
     return this
@@ -140,10 +157,22 @@ export abstract class Level implements Level {
     }
   }
 
+  private _disposeGameObject(gameObject: GameObject) {
+    gameObject.dispose(this._engine.world)
+    const liveIdx = this._liveObjects.indexOf(gameObject)
+    const gameIdx = this._gameObjects.indexOf(gameObject)
+    if (liveIdx > -1) this._liveObjects.splice(liveIdx, 1)
+    if (gameIdx > -1) this._gameObjects.splice(gameIdx, 1)
+  }
+
   //
   // Events
   //
   private _onsensorTrigger: SensorTriggerHandler = ({ triggered }) => {
-    triggered.addText('ffj')
+    this._keyRacer.targetTriggered(triggered)
+  }
+
+  private _ontriggerResolved: TriggerResolvedHandler = ({ triggered }) => {
+    this._disposeGameObject(triggered)
   }
 }
