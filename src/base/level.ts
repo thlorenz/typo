@@ -10,6 +10,7 @@ import { TileScene } from '../tiles/tile-scene'
 import { GameObject } from './game-object'
 
 import {
+  BombTriggerHandler,
   CollisionEvent,
   Collisions,
   SensorTriggerHandler
@@ -133,6 +134,7 @@ export abstract class Level implements Level {
   private _subscribeCollisions(): this {
     this._collisions
       .on(CollisionEvent.SensorTrigger, this._onsensorTrigger)
+      .on(CollisionEvent.BombTrigger, this._onbombTrigger)
     return this
   }
 
@@ -170,6 +172,10 @@ export abstract class Level implements Level {
   //
   private _onsensorTrigger: SensorTriggerHandler = ({ triggered }) => {
     this._keyRacer.targetTriggered(triggered)
+  }
+
+  private _onbombTrigger: BombTriggerHandler = ({ bomb }) => {
+    bomb.handlePlayerCollision()
   }
 
   private _ontriggerResolved: TriggerResolvedHandler = ({ triggered }) => {

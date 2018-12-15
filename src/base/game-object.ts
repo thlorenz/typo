@@ -64,6 +64,7 @@ export abstract class GameObject {
   }
 
   update() { }
+  handlePlayerCollision() { }
 
   private _getGraphicPosition(): P.Point {
     const { x, y } = this._body.position

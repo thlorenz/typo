@@ -33,12 +33,12 @@
                  "height":29.3593367433733,
                  "id":25,
                  "name":"",
-                 "rotation":2.9981774073281,
+                 "rotation":12.0263299423179,
                  "type":"",
                  "visible":true,
                  "width":344.985144499516,
-                 "x":172.25417043689,
-                 "y":302.611847192559
+                 "x":184.094802285797,
+                 "y":259.995273576606
                 }, 
                 {
                  "ellipse":true,
@@ -80,16 +80,6 @@
                  "name":"\ud83d\udca3",
                  "properties":[
                         {
-                         "name":"body.dynamic",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"body.frictionStatic",
-                         "type":"float",
-                         "value":999999999
-                        }, 
-                        {
                          "name":"role.id",
                          "type":"string",
                          "value":"bomb-01"
@@ -104,7 +94,7 @@
                  "visible":true,
                  "width":30,
                  "x":449.336,
-                 "y":285.844
+                 "y":288.844
                 }, 
                 {
                  "height":22.0702,
