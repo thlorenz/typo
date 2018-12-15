@@ -5,8 +5,8 @@ import {
   GraphicOptions
 } from '../base/options'
 
-export default class Circle extends GameObject {
-  _radius: number
+export class Circle extends GameObject {
+  private _radius: number
 
   constructor(
     x: number,

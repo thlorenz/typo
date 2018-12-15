@@ -7,7 +7,7 @@ canvas {
   position: absolute;
   display: block;
   touch-action: none;
-  background-color: black;
+  background-color: #00000022
 }
 .simple-keyboard {
   top: 480px;

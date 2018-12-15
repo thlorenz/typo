@@ -4,8 +4,11 @@ import {
   RoleType,
   roleTypeFromString
 } from '../base/options'
+
+import { Bomb } from '../entities/bomb'
+
 import Box from '../primitives/box'
-import Circle from '../primitives/circle'
+import { Circle } from '../primitives/circle'
 import Poly from '../primitives/poly'
 import { Point } from '../types/geometry'
 import { unhandledCase } from '../util/guards'
@@ -225,23 +228,35 @@ export class TileScene {
   }
 
   private _extractGameObject(tile: TileObject) {
+    const opts = TileScene.tileProperties(tile.properties)
+
+    if (opts.role.type === RoleType.Bomb) return this._addBomb(tile, opts)
+
     const ttype = tileType(tile)
     switch (ttype) {
-      case TileType.Point: this._addPoint(tile); break
-      case TileType.Ellipse: this._addEllipse(tile); break
-      case TileType.Poly: this._addPoly(tile); break
-      case TileType.Box: this._addBox(tile); break
+      case TileType.Point: this._addPoint(tile, opts); break
+      case TileType.Ellipse: this._addEllipse(tile, opts); break
+      case TileType.Poly: this._addPoly(tile, opts); break
+      case TileType.Box: this._addBox(tile, opts); break
       default: unhandledCase(ttype)
     }
   }
 
-  private _addPoint(tile: TileObject) {
-    if (strict) throw new Error(`_addPoint(${tile}) not yet implemented`)
+  private _addPoint(tile: TileObject, opts: GameObjectOptions) {
+    if (strict) {
+      throw new Error(`_addPoint(${tile}) not yet implemented, ${opts}`)
+    }
   }
 
-  private _addEllipse(tile: TileObject) {
-    const opts = TileScene.tileProperties(tile.properties)
+  private _addBomb(tile: TileObject, opts: GameObjectOptions) {
+    const rotation = tile.rotation * Math.PI / 180 as Radians
+    const radius = Math.max(tile.width, tile.height) / 2
+    const { x, y } = centerBox(tile, rotation)
+    const bomb = new Bomb(x, y, radius, opts)
+    this._addGameObject(bomb, opts)
+  }
 
+  private _addEllipse(tile: TileObject, opts: GameObjectOptions) {
     // matterjs only supports circles, so we pick the width of the ellipse only
     const radius = tile.width / 2
     const { x, y } = centerCircle(tile)
@@ -249,9 +264,7 @@ export class TileScene {
     this._addGameObject(circle, opts)
   }
 
-  private _addPoly(tile: TileObject) {
-    const opts = TileScene.tileProperties(tile.properties)
-
+  private _addPoly(tile: TileObject, opts: GameObjectOptions) {
     // tiled supplies position of first vertice in the array as position
     // not sure at this point how to translate position to matter
     // the dimensions and shape are rendered correctly, just posision is off
@@ -259,9 +272,7 @@ export class TileScene {
     this._addGameObject(poly, opts)
   }
 
-  private _addBox(tile: TileObject) {
-    const opts = TileScene.tileProperties(tile.properties)
-
+  private _addBox(tile: TileObject, opts: GameObjectOptions) {
     const rotation = tile.rotation * Math.PI / 180 as Radians
     const { x, y } = centerBox(tile, rotation)
     this._markCenter(x, y, opts.clone())

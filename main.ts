@@ -3,7 +3,7 @@ import Level01 from './src/levels/level01'
 
 const viewportWidth = 855
 const viewportHeight = 480
-const DEBUG = false
+const DEBUG = true
 const RENDER = true
 
 window.addEventListener('DOMContentLoaded', initGame)

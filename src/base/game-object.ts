@@ -31,7 +31,7 @@ export abstract class GameObject {
 
   syncGraphics() {
     if (this._graphics == null) return
-    const { x, y } = this._body.position
+    const { x, y } = this._getGraphicPosition()
     this._graphics.position.set(x, y)
     this._graphics.rotation = this._body.angle
   }
@@ -45,8 +45,8 @@ export abstract class GameObject {
       this._text.destroy()
     }
     this._text = new P.Text(text, this._textStyle)
-    this._text.pivot = this._bodyPosition()
-    this._text.position = this._bodyPosition()
+    this._text.pivot = this._getGraphicPosition()
+    this._text.position = this._getGraphicPosition()
     this._graphics.addChild(this._text)
   }
 
@@ -65,7 +65,7 @@ export abstract class GameObject {
 
   update() { }
 
-  private _bodyPosition(): P.Point {
+  private _getGraphicPosition(): P.Point {
     const { x, y } = this._body.position
     return new P.Point(x, y)
   }
