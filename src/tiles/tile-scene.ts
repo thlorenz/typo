@@ -6,6 +6,7 @@ import {
 } from '../base/options'
 
 import { Bomb } from '../entities/bomb'
+import { Player } from '../entities/player'
 
 import Box from '../primitives/box'
 import { Circle } from '../primitives/circle'
@@ -116,6 +117,9 @@ export interface Tiled {
 }
 
 const enum TileType { Box, Poly, Ellipse, Point }
+
+type EntityCreator =
+  (x: number, y: number, radius: number, opts: GameObjectOptions) => GameObject
 
 function tileType(tile: TileObject): TileType {
   if (tile.point === true) return TileType.Point
@@ -230,8 +234,13 @@ export class TileScene {
   private _extractGameObject(tile: TileObject) {
     const opts = TileScene.tileProperties(tile.properties)
 
-    if (opts.role.type === RoleType.Bomb) return this._addBomb(tile, opts)
+    // Create entities for specific roles
+    switch (opts.role.type) {
+      case RoleType.Bomb: return this._addEntity(tile, Bomb.create, opts)
+      case RoleType.Player: return this._addEntity(tile, Player.create, opts)
+    }
 
+    // Create primitives for everything else
     const ttype = tileType(tile)
     switch (ttype) {
       case TileType.Point: this._addPoint(tile, opts); break
@@ -248,12 +257,16 @@ export class TileScene {
     }
   }
 
-  private _addBomb(tile: TileObject, opts: GameObjectOptions) {
+  private _addEntity(
+    tile: TileObject,
+    createEntity: EntityCreator,
+    opts: GameObjectOptions
+  ) {
     const rotation = tile.rotation * Math.PI / 180 as Radians
     const radius = Math.max(tile.width, tile.height) / 2
     const { x, y } = centerBox(tile, rotation)
-    const bomb = new Bomb(x, y, radius, opts)
-    this._addGameObject(bomb, opts)
+    const entity = createEntity(x, y, radius, opts)
+    this._addGameObject(entity, opts)
   }
 
   private _addEllipse(tile: TileObject, opts: GameObjectOptions) {

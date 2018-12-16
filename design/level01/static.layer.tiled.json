@@ -54,12 +54,12 @@
                         {
                          "name":"body.friction",
                          "type":"float",
-                         "value":0.01
+                         "value":0.4
                         }, 
                         {
                          "name":"body.frictionAir",
                          "type":"float",
-                         "value":0.0001
+                         "value":1e-06
                         }, 
                         {
                          "name":"role.type",

@@ -3,7 +3,10 @@ import { Engine, Events, IEventCollision } from 'matter-js'
 
 import { GameObject } from '../base/game-object'
 import { RoleType } from '../base/options'
+
 import { Bomb } from '../entities/bomb'
+import { Player } from '../entities/player'
+
 import { unhandledCase } from '../util/guards'
 
 export const enum CollisionEvent {
@@ -12,14 +15,14 @@ export const enum CollisionEvent {
 }
 
 type SensorTriggerPayload = {
-  player: GameObject
+  player: Player
   sensor: GameObject
   triggered: GameObject
 }
 export type SensorTriggerHandler = (payload: SensorTriggerPayload) => void
 
 type BombTriggerPayload = {
-  player: GameObject
+  player: Player
   bomb: Bomb
 }
 export type BombTriggerHandler = (payload: BombTriggerPayload) => void
@@ -35,7 +38,7 @@ export class Collisions extends EventEmitter {
     private _roleGameObjects: Map<string, GameObject>
   ) {
     super()
-    Events.on( this._engine, 'collisionStart', this._oncollisionStart)
+    Events.on(this._engine, 'collisionStart', this._oncollisionStart)
   }
 
   private _oncollisionStart = (e: IEventCollision<Engine>) => {

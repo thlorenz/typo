@@ -9,10 +9,16 @@ import { bombExplosionImg } from '../assets/img/bomb-explosion'
 import { BombExplosion } from './bomb.explosion'
 
 export class Bomb extends GameObject {
+  static create = (
+    x: number,
+    y: number,
+    radius: number,
+    options?: GameObjectOptions) => new Bomb(x, y, radius, options)
+
   private _radius: number
   private _sprite: P.Sprite
   private _explosionSprite: P.Sprite
-  private _handlingPlayerCollision = false
+  private _exploding = false
 
   constructor(
     x: number,
@@ -40,16 +46,9 @@ export class Bomb extends GameObject {
     this._draw()
   }
 
-  _draw() {
-    if (this.graphics == null) return
-    this.graphics.addChild(this._sprite)
-    this.graphics.pivot = this._getPivotPosition()
-    this.syncGraphics()
-  }
-
   explode(): BombExplosion | null {
-    if (this._handlingPlayerCollision || this.graphics == null) return null
-    this._handlingPlayerCollision = true
+    if (this._exploding || this.graphics == null) return null
+    this._exploding = true
     return new BombExplosion(this)
   }
 
@@ -58,6 +57,13 @@ export class Bomb extends GameObject {
 
     this.graphics.removeChild(this._sprite)
     this.graphics.addChild(this._explosionSprite)
+    this.syncGraphics()
+  }
+
+  private _draw() {
+    if (this.graphics == null) return
+    this.graphics.addChild(this._sprite)
+    this.graphics.pivot = this._getPivotPosition()
     this.syncGraphics()
   }
 

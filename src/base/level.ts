@@ -8,6 +8,8 @@ import * as P from 'pixi.js'
 
 import { Bomb } from '../entities/bomb'
 import { BombExplosionEvent } from '../entities/bomb.explosion'
+import { Player } from '../entities/player'
+
 import { TileScene } from '../tiles/tile-scene'
 import { GameObject } from './game-object'
 
@@ -169,12 +171,21 @@ export abstract class Level implements Level {
     if (gameIdx > -1) this._gameObjects.splice(gameIdx, 1)
   }
 
-  private _bombDeath(bomb: Bomb) {
+  private _bombDeath(bomb: Bomb, player: Player) {
+    const dyingPlayer = player.die()
     const explosion = bomb.explode()
     if (explosion == null) return
     explosion
       .on(BombExplosionEvent.Exploded, this._disposeGameObject)
-      .start()
+
+    if (dyingPlayer != null) {
+      explosion
+        .on(BombExplosionEvent.Ticking, dyingPlayer.worrying)
+        .on(BombExplosionEvent.Exploding, dyingPlayer.dying)
+        .on(BombExplosionEvent.Exploded, dyingPlayer.dead)
+    }
+
+    explosion.start()
   }
 
   //
@@ -184,8 +195,8 @@ export abstract class Level implements Level {
     this._keyRacer.targetTriggered(triggered)
   }
 
-  private _onbombTrigger: BombTriggerHandler = ({ bomb }) => {
-    this._bombDeath(bomb)
+  private _onbombTrigger: BombTriggerHandler = ({ bomb, player }) => {
+    this._bombDeath(bomb, player)
   }
 
   private _ontriggerResolved: TriggerResolvedHandler = ({ triggered }) => {
