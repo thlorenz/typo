@@ -27,10 +27,13 @@
   },
   "homepage": "https://github.com/thlorenz/typo",
   "devDependencies": {
+    "@types/howler": "~2.0.5",
     "@types/matter-js": "~0.10.2",
     "@types/node": "~10.12.10",
     "@types/pixi.js": "~4.8.3",
     "cssnano": "~4.1.7",
+    "delay": "~4.1.0",
+    "howler": "~2.1.0",
     "http-server": "~0.11.1",
     "matter-js": "~0.14.2",
     "parcel-bundler": "~1.10.3",

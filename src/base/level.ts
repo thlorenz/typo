@@ -6,6 +6,8 @@ import {
 } from 'matter-js'
 import * as P from 'pixi.js'
 
+import { Bomb } from '../entities/bomb'
+import { BombExplosionEvent } from '../entities/bomb.explosion'
 import { TileScene } from '../tiles/tile-scene'
 import { GameObject } from './game-object'
 
@@ -159,12 +161,20 @@ export abstract class Level implements Level {
     }
   }
 
-  private _disposeGameObject(gameObject: GameObject) {
+  private _disposeGameObject = (gameObject: GameObject) => {
     gameObject.dispose(this._engine.world)
     const liveIdx = this._liveObjects.indexOf(gameObject)
     const gameIdx = this._gameObjects.indexOf(gameObject)
     if (liveIdx > -1) this._liveObjects.splice(liveIdx, 1)
     if (gameIdx > -1) this._gameObjects.splice(gameIdx, 1)
+  }
+
+  private _bombDeath(bomb: Bomb) {
+    const explosion = bomb.explode()
+    if (explosion == null) return
+    explosion
+      .on(BombExplosionEvent.Exploded, this._disposeGameObject)
+      .start()
   }
 
   //
@@ -175,7 +185,7 @@ export abstract class Level implements Level {
   }
 
   private _onbombTrigger: BombTriggerHandler = ({ bomb }) => {
-    bomb.handlePlayerCollision()
+    this._bombDeath(bomb)
   }
 
   private _ontriggerResolved: TriggerResolvedHandler = ({ triggered }) => {

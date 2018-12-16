@@ -1,14 +1,18 @@
 import { Bodies } from 'matter-js'
 import * as P from 'pixi.js'
-import { bombDataUrl, radiusMultiplier } from '../assets/data.bomb'
-import { bombExplosionDataUrl } from '../assets/data.bomb-explosion'
+
 import { GameObject } from '../base/game-object'
-import { GameObjectOptions} from '../base/options'
+import { GameObjectOptions } from '../base/options'
+
+import { bombImg, radiusMultiplier } from '../assets/img/bomb'
+import { bombExplosionImg } from '../assets/img/bomb-explosion'
+import { BombExplosion } from './bomb.explosion'
 
 export class Bomb extends GameObject {
   private _radius: number
   private _sprite: P.Sprite
   private _explosionSprite: P.Sprite
+  private _handlingPlayerCollision = false
 
   constructor(
     x: number,
@@ -25,13 +29,14 @@ export class Bomb extends GameObject {
 
     // TODO: use sprite sheet
     // http://pixijs.download/dev/docs/PIXI.Sprite.html
-    this._sprite = P.Sprite.fromImage(bombDataUrl)
+    this._sprite = P.Sprite.fromImage(bombImg)
     this._sprite.width = this._radius * radiusMultiplier
     this._sprite.height = this._radius * radiusMultiplier
 
-    this._explosionSprite = P.Sprite.fromImage(bombExplosionDataUrl)
+    this._explosionSprite = P.Sprite.fromImage(bombExplosionImg)
     this._explosionSprite.width = this._radius * radiusMultiplier
     this._explosionSprite.height = this._radius * radiusMultiplier
+
     this._draw()
   }
 
@@ -42,8 +47,15 @@ export class Bomb extends GameObject {
     this.syncGraphics()
   }
 
-  handlePlayerCollision() {
+  explode(): BombExplosion | null {
+    if (this._handlingPlayerCollision || this.graphics == null) return null
+    this._handlingPlayerCollision = true
+    return new BombExplosion(this)
+  }
+
+  showExplosionSprite() {
     if (this.graphics == null) return
+
     this.graphics.removeChild(this._sprite)
     this.graphics.addChild(this._explosionSprite)
     this.syncGraphics()
@@ -51,8 +63,8 @@ export class Bomb extends GameObject {
 
   private _getPivotPosition(): P.Point {
     return new P.Point(
-       (this._sprite.width / 2 * 0.7),
-       (this._sprite.height / 2 * 1.3)
+      (this._sprite.width / 2 * 0.7),
+      (this._sprite.height / 2 * 1.3)
     )
   }
 }

@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events'
 import { Engine, Events, IEventCollision } from 'matter-js'
+
 import { GameObject } from '../base/game-object'
 import { RoleType } from '../base/options'
 import { Bomb } from '../entities/bomb'
@@ -34,7 +35,7 @@ export class Collisions extends EventEmitter {
     private _roleGameObjects: Map<string, GameObject>
   ) {
     super()
-    Events.on(this._engine, 'collisionStart', this._oncollisionStart)
+    Events.on( this._engine, 'collisionStart', this._oncollisionStart)
   }
 
   private _oncollisionStart = (e: IEventCollision<Engine>) => {
