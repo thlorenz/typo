@@ -3,7 +3,7 @@ import { TileLayer, TileScene } from '../tiles/tile-scene'
 
 import * as tiled from '../../design/level01/static.layer.tiled.json'
 
-const texts = [ 'jj', 'jk', 'kj' ]
+const texts = [ 'jj', 'jk', 'kj', 'kk', 'kj' ]
 
 export default class Level01 extends Level {
   constructor({
@@ -17,8 +17,8 @@ export default class Level01 extends Level {
     const tileScene = new TileScene(objectLayer as TileLayer)
 
     super(tileScene, texts, {
-      levelWidth: 1000,
-      levelHeight: 780,
+      levelWidth: 2000,
+      levelHeight: 5000,
       viewportWidth,
       viewportHeight,
       renderParent,

@@ -33,6 +33,7 @@ function initGame(): void {
   level.start()
 }
 
+/*
 // @ts-ignore
 if (module.hot) {
   // @ts-ignore
@@ -40,3 +41,4 @@ if (module.hot) {
     initGame()
   })
 }
+*/

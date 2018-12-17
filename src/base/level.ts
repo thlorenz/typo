@@ -4,7 +4,12 @@ import {
   Render,
   World
 } from 'matter-js'
+
 import * as P from 'pixi.js'
+// @ts-ignore pixi-viewport expects a global PIXI on the window
+window.PIXI = P
+
+import Viewport from 'pixi-viewport'
 
 import { Bomb } from '../entities/bomb'
 import { BombExplosionEvent } from '../entities/bomb.explosion'
@@ -12,6 +17,7 @@ import { Player } from '../entities/player'
 
 import { TileScene } from '../tiles/tile-scene'
 import { GameObject } from './game-object'
+import { RoleType } from './options'
 
 import {
   BombTriggerHandler,
@@ -50,6 +56,7 @@ export abstract class Level implements Level {
 
   private _viewportWidth: number
   private _viewportHeight: number
+  private _viewport: Viewport
 
   private _renderParent: HTMLElement
   // @ts-ignore will use in the future
@@ -81,6 +88,13 @@ export abstract class Level implements Level {
     this._renderParent = renderParent
     this._debugRenderParent = debugRenderParent
 
+    this._viewport = new Viewport({
+      screenWidth: viewportWidth,
+      screenHeight: viewportHeight,
+      worldWidth: levelWidth,
+      worldHeight: levelHeight,
+      noTicker: true
+    })
     this._engine = Engine.create()
     this._collisions =
       new Collisions(this._engine, this._tileScene.roleGameObjects)
@@ -90,7 +104,10 @@ export abstract class Level implements Level {
   init({ debug = true, render = true }) {
     if (debug) this._initDebugRender()
     if (render) this._initRender()
-    if (this._app != null) this._render = this._app.stage
+    if (this._app != null) {
+      this._app.stage.addChild(this._viewport)
+      this._render = this._viewport
+    }
     this
       ._add(this._tileScene.staticGameObjects)
       ._add(this._tileScene.dynamicGameObjects)
@@ -110,6 +127,7 @@ export abstract class Level implements Level {
       if (this._render != null) gameObject.syncGraphics()
       gameObject.update()
     }
+    this._viewport.update()
     this.updateLevel()
   }
 
@@ -160,6 +178,10 @@ export abstract class Level implements Level {
 
     if (this._render != null && gameObject.graphics != null) {
       this._render.addChild(gameObject.graphics)
+      if (gameObject.role.type === RoleType.Player) {
+        const radius = Math.min(this._viewportWidth, this._viewportHeight) / 4
+        this._viewport.follow( gameObject.graphics, { radius, speed: 0 })
+      }
     }
   }
 
