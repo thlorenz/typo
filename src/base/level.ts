@@ -15,6 +15,7 @@ import { Bomb } from '../entities/bomb'
 import { BombExplosionEvent } from '../entities/bomb.explosion'
 import { Player } from '../entities/player'
 
+import { Camera } from '../scene/camera'
 import { TileScene } from '../tiles/tile-scene'
 import { GameObject } from './game-object'
 import { RoleType } from './options'
@@ -48,6 +49,7 @@ interface AllLevelOptions extends LevelOptions {
 export abstract class Level implements Level {
   private _tileScene: TileScene
   private _keyRacer: KeyRacer
+  private  _camera: Camera
 
   protected get engine() { return this._engine }
 
@@ -95,6 +97,7 @@ export abstract class Level implements Level {
       worldHeight: levelHeight,
       noTicker: true
     })
+    this._camera = new Camera(this._viewport, viewportWidth, viewportHeight)
     this._engine = Engine.create()
     this._collisions =
       new Collisions(this._engine, this._tileScene.roleGameObjects)
@@ -179,8 +182,7 @@ export abstract class Level implements Level {
     if (this._render != null && gameObject.graphics != null) {
       this._render.addChild(gameObject.graphics)
       if (gameObject.role.type === RoleType.Player) {
-        const radius = Math.min(this._viewportWidth, this._viewportHeight) / 4
-        this._viewport.follow( gameObject.graphics, { radius, speed: 0 })
+        this._camera.player = gameObject as Player
       }
     }
   }
@@ -216,6 +218,7 @@ export abstract class Level implements Level {
   // Events
   //
   private _onsensorTrigger: SensorTriggerHandler = ({ triggered }) => {
+    this._camera.followTriggered(triggered)
     this._keyRacer.targetTriggered(triggered)
   }
 
@@ -224,6 +227,7 @@ export abstract class Level implements Level {
   }
 
   private _ontriggerResolved: TriggerResolvedHandler = ({ triggered }) => {
+    this._camera.followPlayer()
     this._disposeGameObject(triggered)
   }
 }

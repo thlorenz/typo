@@ -133,6 +133,128 @@
                  "width":25.3807,
                  "x":97.6581,
                  "y":115.316
+                }, 
+                {
+                 "height":34.0060765534619,
+                 "id":38,
+                 "name":"",
+                 "rotation":-334.720383988488,
+                 "type":"",
+                 "visible":true,
+                 "width":894.838248634915,
+                 "x":858.26150560846,
+                 "y":450.449111592637
+                }, 
+                {
+                 "ellipse":true,
+                 "height":50,
+                 "id":39,
+                 "name":"\ud83d\udca3",
+                 "properties":[
+                        {
+                         "name":"role.id",
+                         "type":"string",
+                         "value":"bomb-02"
+                        }, 
+                        {
+                         "name":"role.type",
+                         "type":"string",
+                         "value":"Bomb"
+                        }],
+                 "rotation":-43.5085330105284,
+                 "type":"bomb",
+                 "visible":true,
+                 "width":50,
+                 "x":1501.42604863376,
+                 "y":737.9813657993
+                }, 
+                {
+                 "height":47.4509,
+                 "id":40,
+                 "name":"\ud83d\udea6",
+                 "properties":[
+                        {
+                         "name":"body.isSensor",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"role.triggerId",
+                         "type":"string",
+                         "value":"bomb-02"
+                        }, 
+                        {
+                         "name":"role.type",
+                         "type":"string",
+                         "value":"Trigger"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":25.3807,
+                 "x":735.30965,
+                 "y":378.27455
+                }, 
+                {
+                 "height":34.0061,
+                 "id":41,
+                 "name":"",
+                 "rotation":-377.033644967527,
+                 "type":"",
+                 "visible":true,
+                 "width":1561.24863706947,
+                 "x":877.886330309333,
+                 "y":1190.57526027528
+                }, 
+                {
+                 "ellipse":true,
+                 "height":40,
+                 "id":42,
+                 "name":"\ud83d\udca3",
+                 "properties":[
+                        {
+                         "name":"role.id",
+                         "type":"string",
+                         "value":"bomb-03"
+                        }, 
+                        {
+                         "name":"role.type",
+                         "type":"string",
+                         "value":"Bomb"
+                        }],
+                 "rotation":-85.8221449675271,
+                 "type":"bomb",
+                 "visible":true,
+                 "width":40,
+                 "x":930.284850781535,
+                 "y":1164.13035048382
+                }, 
+                {
+                 "height":47.4509,
+                 "id":44,
+                 "name":"\ud83d\udea6",
+                 "properties":[
+                        {
+                         "name":"body.isSensor",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"role.triggerId",
+                         "type":"string",
+                         "value":"bomb-03"
+                        }, 
+                        {
+                         "name":"role.type",
+                         "type":"string",
+                         "value":"Trigger"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":25.3807,
+                 "x":1659.30965,
+                 "y":892.27455
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -141,7 +263,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":38,
+ "nextobjectid":45,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.1",
