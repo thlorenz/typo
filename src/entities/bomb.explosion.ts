@@ -29,10 +29,11 @@ export class BombExplosion extends EventEmitter {
     // Wait for ticks to complete before showing explosion
     await delay(1000)
 
-    // Show exploding bomb and let sound complete playing
+    // Show exploding bomb
     this._bomb.showExplosionSprite()
     this.emit(BombExplosionEvent.Exploding, this._bomb)
 
+    // Let explostion and related sound complete playing
     if (this._bomb.graphics != null) {
       await this._animateExplosion(this._bomb.graphics)
     }

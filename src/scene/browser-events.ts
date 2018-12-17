@@ -12,7 +12,8 @@ export type KeyupEvent = {
 }
 
 export interface BrowserEvents {
-  on(event: BrowserEvent, listener: (payload: KeyupEvent) => void): this
+  on(event: BrowserEvent.Keyup, listener: (payload: KeyupEvent) => void): this
+  removeAllListeners(event: BrowserEvent.Keyup): this
 }
 
 export class BrowserEvents extends EventEmitter {

@@ -172,6 +172,8 @@ export abstract class Level implements Level {
   }
 
   private _bombDeath(bomb: Bomb, player: Player) {
+    this._keyRacer.disable()
+
     const dyingPlayer = player.die()
     const explosion = bomb.explode()
     if (explosion == null) return

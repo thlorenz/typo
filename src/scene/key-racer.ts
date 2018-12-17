@@ -28,6 +28,7 @@ export interface KeyRacer {
 }
 
 export class KeyRacer extends EventEmitter {
+  private _keyboard: Keyboard
   private _texts: string[]
   private _triggered?: GameObject
   private _text?: string
@@ -36,9 +37,18 @@ export class KeyRacer extends EventEmitter {
   constructor(texts: string[] = []) {
     super()
     this._texts = texts
-    // tslint:disable-next-line
-    new Keyboard({ physicalKeyboardHighlight: true })
+    this._keyboard = new Keyboard({})
+    this.enable()
+  }
+
+  enable() {
     browserEvents.on(BrowserEvent.Keyup, this._onkeyup)
+    this._keyboard.options.physicalKeyboardHighlight = true
+  }
+
+  disable() {
+    browserEvents.removeListener(BrowserEvent.Keyup, this._onkeyup)
+    this._keyboard.options.physicalKeyboardHighlight = false
   }
 
   targetTriggered(triggered: GameObject) {
