@@ -18,19 +18,30 @@ function removeExistingGame(): void {
   removeAllWithClass('simple-keyboard')
 }
 
-function init(): Level {
+function init(tileset: Tileset): Level {
   removeExistingGame()
   addElementWithClass('simple-keyboard')
   return new Level01({
     viewportWidth,
-    viewportHeight
+    viewportHeight,
+    tileset
   })
 }
 
-function initGame(): void {
-  const level = init()
+import castleTilesetData from './design/tilesets/castle/tile_castle_grey.json'
+import { Tileset } from './src/tiles/tileset'
+import { ResourceLoader } from './src/util/resources'
+
+async function initGame(): Promise<void> {
+  const castleTileset = new Tileset(castleTilesetData)
+  const resourceLoader = new ResourceLoader(castleTileset)
+  await resourceLoader.load()
+
+  const level = init(castleTileset)
   level.init({ debug: DEBUG, render: RENDER })
+  /*
   level.start()
+  */
 }
 
 /*

@@ -13,6 +13,7 @@
       "max-classes-per-file": [true, 10],
       "max-line-length": [true, 80],
       "member-access": [true, "no-public"],
+      "no-console": [false, "log", "error"],
       "no-empty": [true, "allow-empty-functions"],
       "object-literal-sort-keys": [false],
       "quotemark": [true, "single", "jsx-double"],
