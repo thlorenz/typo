@@ -31,8 +31,8 @@ export class TilesTerrain {
   height: number
   rows: number
   columns: number
-  _tileWidth: number
-  _tileHeight: number
+  tileWidth: number
+  tileHeight: number
 
   private _tiles: TerrainTile[] = []
 
@@ -40,13 +40,13 @@ export class TilesTerrain {
     private _tilelayer: TilemapLayer,
     private _tileset: Tileset
   ) {
-    this._tileWidth = this._tileset.tileWidth
-    this._tileHeight = this._tileset.tileHeight
+    this.tileWidth = this._tileset.tileWidth
+    this.tileHeight = this._tileset.tileHeight
 
     this.rows = this._tilelayer.width
     this.columns = this._tilelayer.height
-    this.width = this.columns * this._tileWidth
-    this.height = this.rows * this._tileHeight
+    this.width = this.columns * this.tileWidth
+    this.height = this.rows * this.tileHeight
     this._process()
   }
 
@@ -69,8 +69,8 @@ export class TilesTerrain {
     return cellPosition(
       cellIdx,
       this.columns,
-      this._tileWidth,
-      this._tileHeight
+      this.tileWidth,
+      this.tileHeight
     )
   }
 }

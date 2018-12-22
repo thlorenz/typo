@@ -8,7 +8,7 @@ import {
 
 const viewportWidth = 855
 const viewportHeight = 480
-const DEBUG = false
+const DEBUG = true
 const RENDER = true
 
 window.addEventListener('DOMContentLoaded', initGame)
@@ -39,12 +39,9 @@ async function initGame(): Promise<void> {
 
   const level = init(castleTileset)
   level.init({ debug: DEBUG, render: RENDER })
-  /*
   level.start()
-  */
 }
 
-/*
 // @ts-ignore
 if (module.hot) {
   // @ts-ignore
@@ -52,4 +49,3 @@ if (module.hot) {
     initGame()
   })
 }
-*/

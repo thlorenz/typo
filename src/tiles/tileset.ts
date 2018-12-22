@@ -2,9 +2,13 @@ import { tilesetCastleGrey } from '../assets/img/tileset.castle-grey'
 import { Point, Size } from '../types/geometry.js'
 import { TileObjectGroup, TileSetRoot } from './tiled-types'
 
+export const enum BodyType {
+  Box = 0,
+  Polygon = 1
+}
 export abstract class BodyDefinition {
   constructor(
-    public bodyType: 'box' | 'polygon',
+    public bodyType: BodyType,
     public x: number,
     public y: number
   ) { }
@@ -15,14 +19,14 @@ export class BoxDefinition extends BodyDefinition {
     public x: number,
     public y: number,
     public width: number,
-    public height: number) { super('box', x, y) }
+    public height: number) { super(BodyType.Box, x, y) }
 }
 
 export class PolyDefinition extends BodyDefinition {
   constructor(
     public x: number,
     public y: number,
-    public points: Point[]) { super('polygon', x, y) }
+    public points: Point[]) { super(BodyType.Polygon, x, y) }
 }
 
 // SpriteInfo tells Pixi where in the Tileimage to find the tile
@@ -149,7 +153,10 @@ export class Tileset {
       } else {
         bodyDefinition = new BoxDefinition(x.x, x.y, x.width, x.height)
       }
-      this._tileBodies.set(tile.id, bodyDefinition)
+      // Tiled provides 1 based tile ids in map (0 indicating empty), but stores
+      // them via 0 based ids in the tileset.
+      // Therefore we fix this by making tileset ids 1 based as well.
+      this._tileBodies.set(tile.id + 1, bodyDefinition)
     }
   }
 
