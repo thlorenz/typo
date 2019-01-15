@@ -8,16 +8,10 @@ import decomp from 'poly-decomp'
 // @ts-ignore
 window.decomp = decomp
 
-import { Bodies, Engine, Render, World } from 'matter-js'
+import { Engine, Render } from 'matter-js'
 import { TilesTerrain } from '../tiles/tiles.terrain'
-import {
-  BodyType,
-  BoxDefinition,
-  PolyDefinition,
-  Tileset
-} from '../tiles/tileset'
-import { Point } from '../types/geometry'
-import { BodyOptions } from './options'
+import { Tileset } from '../tiles/tileset'
+import { LevelTerrain } from './level.terrain'
 
 export interface LevelOptions {
   viewportWidth: number
@@ -35,6 +29,7 @@ export abstract class Level {
   private _engine: Engine
   private _levelWidth: number
   private _levelHeight: number
+  private _levelTerrain: LevelTerrain
 
   constructor(
     private _viewportWidth: number,
@@ -49,6 +44,7 @@ export abstract class Level {
     this._engine = Engine.create()
     this._levelWidth = this._terrain.width
     this._levelHeight = this._terrain.height
+    this._levelTerrain = new LevelTerrain(this._engine, this._terrain)
   }
 
   init({ debug = true, render = true }) {
@@ -57,10 +53,10 @@ export abstract class Level {
 
     if (this._app != null) {
       this._render = this._app.stage
-      this._addTerrainGraphics()
+      this._levelTerrain.renderBodies(this._render!)
     }
 
-    this._addTerrainBodies()
+    this._levelTerrain.addBodies()
   }
 
   start() {
@@ -88,70 +84,6 @@ export abstract class Level {
         wireframes: true
       }
     })
-  }
-
-  private _addTerrainGraphics() {
-    for (const tile of this._terrain.tiles) {
-      const sprite = P.Sprite.fromFrame(tile.spriteId)
-      sprite.position.set(tile.position.x, tile.position.y)
-      this._render!.addChild(sprite)
-    }
-  }
-
-  private _addTerrainBodies() {
-    const bodyOptions = new BodyOptions()
-    bodyOptions.isStatic = true
-
-    for (const tile of this._terrain.tiles) {
-      const bodyDefinition = tile.bodyDefinition
-      if (bodyDefinition == null) continue
-      const { position } = tile
-
-      if (bodyDefinition.bodyType === BodyType.Box) {
-        this._addBoxBody(bodyDefinition as BoxDefinition, position, bodyOptions)
-      } else {
-        this._addPolyBody(
-          bodyDefinition as PolyDefinition,
-          position,
-          bodyOptions)
-      }
-    }
-  }
-
-  private _addBoxBody(
-    box: BoxDefinition,
-    position: Point,
-    bodyOptions: BodyOptions
-  ) {
-    const { x, y, width, height } = box
-    // matterjs wants the rectangle center for placement
-    // additionally we need to add the offset of the body from
-    // the tile's upper left corner
-    const cx = position.x + (width / 2) + x
-    const cy = position.y + (height / 2) + y
-    const body = Bodies.rectangle(cx, cy, width, height, bodyOptions)
-    World.addBody(this._engine.world, body)
-  }
-
-  private _addPolyBody(
-    poly: PolyDefinition,
-    position: Point,
-    bodyOptions: BodyOptions
-  ) {
-    const { y, points } = poly
-
-    // Adjust polygon origin so that matterjs places it correctly
-    // It appears that Tiled stores it slightly differently
-    const xoffset = (this._terrain.tileWidth / 2)
-    const yoffset = (this._terrain.tileHeight / 2) + y
-
-    const body = Bodies.fromVertices(
-      position.x + xoffset,
-      position.y + yoffset,
-      [points],
-      bodyOptions
-    )
-    World.addBody(this._engine.world, body)
   }
 
   private _update() { }
