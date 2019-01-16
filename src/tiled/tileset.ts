@@ -1,6 +1,6 @@
 import { tilesetCastleGrey } from '../assets/img/tileset.castle-grey'
 import { Point, Size } from '../types/geometry.js'
-import { TileObjectGroup, TileSetRoot } from './tiled-types'
+import { TileObjectGroup, TileSetRoot } from './types'
 
 export const enum BodyType {
   Box = 0,

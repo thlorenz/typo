@@ -9,8 +9,8 @@ import decomp from 'poly-decomp'
 window.decomp = decomp
 
 import { Engine, Render } from 'matter-js'
-import { TilesTerrain } from '../tiles/tiles.terrain'
-import { Tileset } from '../tiles/tileset'
+import { TilesTerrain } from '../tiled/tiles.terrain'
+import { Tileset } from '../tiled/tileset'
 import { LevelTerrain } from './level.terrain'
 
 export interface LevelOptions {

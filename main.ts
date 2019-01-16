@@ -29,7 +29,7 @@ function init(tileset: Tileset): Level {
 }
 
 import castleTilesetData from './design/tilesets/castle/tile_castle_grey.json'
-import { Tileset } from './src/tiles/tileset'
+import { Tileset } from './src/tiled/tileset'
 import { ResourceLoader } from './src/util/resources'
 
 async function initGame(): Promise<void> {

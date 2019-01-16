@@ -1,7 +1,7 @@
 import { Level, LevelOptions } from '../base/level'
 
 import levelData from '../../design/maps/level01.json'
-import { TilesTerrain } from '../tiles/tiles.terrain'
+import { TilesTerrain } from '../tiled/tiles.terrain'
 
 const TILES_TERRAIN = 'Tiles.Terrain'
 

@@ -1,8 +1,8 @@
 import { fail } from 'assert'
 import { Point } from '../types/geometry.js'
 import { cellPosition } from '../util/matrix.js'
-import { TilemapLayer } from './tiled-types'
 import { BodyDefinition, SpritesPack, Tileset } from './tileset.js'
+import { TilemapLayer } from './types'
 
 export class TerrainTile {
   constructor(

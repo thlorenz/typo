@@ -1,9 +1,9 @@
 import { Bodies, Engine, World } from 'matter-js'
 import * as P from 'pixi.js'
 
-import { TilesTerrain } from '../tiles/tiles.terrain'
+import { TilesTerrain } from '../tiled/tiles.terrain'
 
-import { BodyType, BoxDefinition, PolyDefinition } from '../tiles/tileset'
+import { BodyType, BoxDefinition, PolyDefinition } from '../tiled/tileset'
 
 import { Point } from '../types/geometry'
 import { BodyOptions } from './options'

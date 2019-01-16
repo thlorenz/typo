@@ -1,5 +1,5 @@
 import * as P from 'pixi.js'
-import { Tileset } from '../tiles/tileset';
+import { Tileset } from '../tiled/tileset';
 
 async function maybeLoad(url: string): Promise<void> {
   // There seems to be no way to cleanly dispose all loaded resources
