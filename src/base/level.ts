@@ -9,8 +9,12 @@ import decomp from 'poly-decomp'
 window.decomp = decomp
 
 import { Engine, Render } from 'matter-js'
+import Viewport from 'pixi-viewport'
+import { Camera } from '../scene/camera'
+import { ObjectsGame } from '../tiled/objects.game'
 import { TilesTerrain } from '../tiled/tiles.terrain'
 import { Tileset } from '../tiled/tileset'
+import { LevelObjects } from './level.objects'
 import { LevelTerrain } from './level.terrain'
 
 export interface LevelOptions {
@@ -30,11 +34,15 @@ export abstract class Level {
   private _levelWidth: number
   private _levelHeight: number
   private _levelTerrain: LevelTerrain
+  private _levelObjects: LevelObjects
+  private _viewport: Viewport
+  private _camera: Camera
 
   constructor(
     private _viewportWidth: number,
     private _viewportHeight: number,
     private _terrain: TilesTerrain,
+    private _objectsGame: ObjectsGame,
     // @ts-ignore will use in the future
     private _texts: string[],
     private _renderParent = document.body,
@@ -45,18 +53,33 @@ export abstract class Level {
     this._levelWidth = this._terrain.width
     this._levelHeight = this._terrain.height
     this._levelTerrain = new LevelTerrain(this._engine, this._terrain)
+    this._levelObjects = new LevelObjects(this._engine, this._objectsGame)
+
+    this._viewport = new Viewport({
+      screenWidth: this._viewportWidth,
+      screenHeight: this._viewportHeight,
+      worldWidth: this._levelWidth,
+      worldHeight: this._levelHeight,
+      noTicker: true
+    })
+    this._camera = new Camera(
+      this._viewport,
+      this._viewportWidth,
+      this._viewportHeight)
   }
 
   init({ debug = true, render = true }) {
     if (debug) this._initDebugRender()
     if (render) this._initRender()
 
+    this._levelTerrain.addBodies()
+    this._levelObjects.addRoles()
+
     if (this._app != null) {
       this._render = this._app.stage
       this._levelTerrain.renderBodies(this._render!)
+      this._levelObjects.render(this._render!, this._camera)
     }
-
-    this._levelTerrain.addBodies()
   }
 
   start() {

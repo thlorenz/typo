@@ -1,8 +1,8 @@
-import { fail } from 'assert'
 import { Point } from '../types/geometry.js'
 import { cellPosition } from '../util/matrix.js'
+import { findLayer } from './helpers.js'
 import { BodyDefinition, SpritesPack, Tileset } from './tileset.js'
-import { TilemapLayer } from './types'
+import { TileLayer, TilemapLayer } from './types'
 
 export class TerrainTile {
   constructor(
@@ -17,14 +17,8 @@ export class TilesTerrain {
   get tiles() { return this._tiles }
   get spritesPack(): SpritesPack { return this._tileset.spritesPack }
 
-  static findLayer(
-    layers: TilemapLayer[],
-    name: string
-  ): TilemapLayer {
-    for (const layer of layers) {
-      if (layer.name === name) return layer
-    }
-    return fail(new Error(`Couldn't find layer ${name}`))
+  static findLayer(layers: TileLayer[], name: string): TilemapLayer {
+    return findLayer(layers, name) as TilemapLayer
   }
 
   width: number

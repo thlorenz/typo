@@ -1,67 +1,29 @@
-import { RoleType } from '../base/options'
 import { Point } from '../types/geometry'
-
-export type BooleanProperty = {
-  name:
-  | 'body.dynamic'
-  | 'body.isSensor'
-  type: 'bool'
-  value: boolean
-}
-
-export type NumberProperty = {
-  name:
-  | 'body.friction'
-  | 'body.frictionAir'
-  | 'body.frictionStatic'
-  | 'body.density'
-  type: 'int' | 'float'
-  value: number
-}
-
-export type RoleTypeProperty = {
-  name: 'role.type'
-  type: 'string'
-  value: keyof typeof RoleType
-}
 
 export type StringProperty = {
   name:
-  | RoleTypeProperty['name']
-  | 'role.id'
-  | 'role.triggerId'
+  | 'triggerId'
   type: 'string'
   value: string
 }
 
 export type Property = {
   name:
-  | BooleanProperty['name']
-  | NumberProperty['name']
   | StringProperty['name']
-  | RoleTypeProperty['name']
 
   type:
-  | BooleanProperty['type']
-  | NumberProperty['type']
   | StringProperty['type']
 
   value:
-  | BooleanProperty['value']
-  | NumberProperty['value']
   | StringProperty['value']
 }
 
-export const isboolean = (prop: Property): prop is BooleanProperty =>
-  prop.type === 'bool'
-export const isnumber = (prop: Property): prop is NumberProperty =>
-  prop.type === 'int' || prop.type === 'float'
 export const isstring = (prop: Property): prop is StringProperty =>
   prop.type === 'string'
 
 export type TileObject = Point & {
   id: number
-  type: string
+  type: 'Player' | 'Trigger' | 'Bomb' | string
   name: string
   visible: boolean
   properties?: Property[]
@@ -81,6 +43,10 @@ export type TileLayer = Point & {
   type: string
   visible: boolean
   opacity: number
+}
+
+export type ObjectLayer = TileLayer & {
+  objects: TileObject[]
 }
 
 export type TilemapLayer = TileLayer & {
