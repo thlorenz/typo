@@ -3,7 +3,7 @@ import * as P from 'pixi.js'
 
 import { Bomb } from '../entities/bomb'
 import { Player } from '../entities/player'
-import Box from '../primitives/box'
+import { Trigger } from '../entities/Trigger'
 
 import { Camera } from '../scene/camera'
 import { ObjectsGame } from '../tiled/objects.game'
@@ -36,6 +36,7 @@ function centerBox(
 
 export class LevelObjects {
   roleGameObjects: Map<string, GameObject> = new Map()
+  dynamicObjects: GameObject[] = []
 
   constructor(
     private _engine: Engine,
@@ -58,6 +59,13 @@ export class LevelObjects {
     }
   }
 
+  dispose(gameObject: GameObject) {
+    gameObject.dispose(this._engine.world)
+    const dynamicIdx = this.dynamicObjects.indexOf(gameObject)
+    if (dynamicIdx > -1) this.dynamicObjects.splice(dynamicIdx, 1)
+    this.roleGameObjects.delete(gameObject.role.id!)
+  }
+
   private _addBombs() {
     for (const b of this._objects.bombs) {
       const opts = new GameObjectOptions()
@@ -72,13 +80,11 @@ export class LevelObjects {
   private _addTriggers() {
     for (const s of this._objects.triggers) {
       const id = `trigger:${s.triggerId}`
-      const opts = new GameObjectOptions()
-      opts.role.type = RoleType.Trigger
-      opts.role.id = id
+      const opts = Trigger.defaultOpts()
       opts.role.triggerId = s.triggerId
-      opts.body.isSensor = true
+      opts.role.id = id
       const { x, y } = centerBox(s.position, s.width, s.height)
-      const trigger = new Box(x, y, s.width, s.height, 0, opts)
+      const trigger = new Trigger(x, y, s.width, s.height, 0, opts)
       this._addRoleGameObject(id, trigger)
     }
   }
@@ -87,13 +93,11 @@ export class LevelObjects {
     const p = this._objects.player
     if (p == null) throw new Error('No player found in objects')
 
-    const id = 'player'
-    const opts = new GameObjectOptions()
-    opts.role.type = RoleType.Player
-    opts.role.id = id
+    const opts = Player.defaultOpts()
     const { x, y } = centerCircle(p.position, p.radius)
     const player = new Player(x, y, p.radius, opts)
-    this._addRoleGameObject(id, player)
+    this._addRoleGameObject(opts.role.id!, player)
+    this.dynamicObjects.push(player)
   }
 
   private _addRoleGameObject(id: string, gameObject: GameObject) {

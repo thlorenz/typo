@@ -109,5 +109,17 @@ export abstract class Level {
     })
   }
 
-  private _update() { }
+  private _update = () => {
+    for (const gameObject of this._levelObjects.dynamicObjects) {
+      if (this._render != null) gameObject.syncGraphics()
+      gameObject.update()
+    }
+    this._viewport.update()
+  }
+
+  /*
+  private _disposeGameObject = (gameObject: GameObject) => {
+    this._levelObjects.dispose(gameObject)
+  }
+  */
 }

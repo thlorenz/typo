@@ -5,7 +5,7 @@ import { playerDiedImg } from '../assets/img/player.died'
 import { playerNormalImg, radiusMultiplier } from '../assets/img/player.normal'
 import { playerWorriedImg } from '../assets/img/player.worried'
 import { GameObject } from '../base/game-object'
-import { GameObjectOptions } from '../base/options'
+import { GameObjectOptions, RoleType } from '../base/options'
 import { PlayerDeath } from './player.death'
 
 export class Player extends GameObject {
@@ -14,6 +14,16 @@ export class Player extends GameObject {
     y: number,
     radius: number,
     options?: GameObjectOptions) => new Player(x, y, radius, options)
+
+  static defaultOpts() {
+    const opts = new GameObjectOptions()
+    opts.role.type = RoleType.Player
+    opts.role.id = 'player'
+    opts.body.isStatic = false
+    opts.body.friction = 0.4
+    opts.body.frictionAir = 0.000001
+    return opts
+  }
 
   private _radius: number
 
