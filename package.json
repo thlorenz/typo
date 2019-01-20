@@ -43,7 +43,7 @@
     "howler": "~2.1.0",
     "http-server": "~0.11.1",
     "matter-js": "~0.14.2",
-    "parcel-bundler": "~1.10.3",
+    "parcel-bundler": "~1.11.0",
     "pixi-viewport": "~3.11.0",
     "pixi.js": "~4.8.2",
     "poly-decomp": "~0.3.0",
